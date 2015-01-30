@@ -109,7 +109,10 @@ class MAssign < Statement
 end
 
 
-class ParseException < Exception
+class ParseException < Exception  
+  def initialize line=0, index=0, char='', msg=''
+    super "Unexpected character '#{char}' on #{line}:#{index}. #{msg}"
+  end
 end
 
 
@@ -120,6 +123,7 @@ end
 # All tokens' 'val' field is a string for now.
 def parse string
   # Turn that mofo into an array
+  line = 0
   string = string.each_char.to_a
   token = nil
   tokens = []
@@ -129,20 +133,49 @@ def parse string
     if token
       # See if you can extend it!
       
-      # A space is always the end of a token.
-      if char == ' '
+      # A space, end of line, or end of file is always the end of a token.
+      if [' ', '\n', nil].include? char
         tokens << token
         token = nil
+        next
       end
       
-      puts token
-      case token.class
+      case 
+      #
+      #
+      # => STRINGS
+      #
+      #
+      when token.class == MString
+        #
+        # Eval current char
+        #
+        case
+        # It's the end of the string
+        when char == '"'
+          token.val += char
+          tokens << token
+          token = nil
+          next
+        # It's some other character
+        else
+          token.val += char
+        end
+        
+        #
+        # Eval next char
+        #
+        # Throw exception if opening " is not matched with closing "
+        if next_char == nil
+          throw ParseException.new(line, index + 1, next_char, 'No closing quotations')
+        end
+      
       #
       #
       # => INTEGERS
       #
       #
-      when MInteger
+      when token.class == MInteger
         #
         # Eval current char
         #
@@ -156,10 +189,10 @@ def parse string
           next
         # It's a . then something else. Error
         when char == '.'
-          throw ParseException.new
+          throw ParseException.new(line, index, char, 'Next character not numeric')
         # Something else
         else
-          throw ParseException.new
+          throw ParseException.new(line, index, char)
         end
         
         #
@@ -175,14 +208,14 @@ def parse string
           token = nil
         # Something invalid
         else
-          throw ParseException.new
+          throw ParseException.new(line, index + 1, next_char)
         end
       #
       #
       # => REALS
       #
       #
-      when MReal
+      when token.class == MReal
         #
         # => Eval current char
         #
@@ -190,12 +223,9 @@ def parse string
         # It's a number
         when @numeric.include?(char)
           token.val += char
-        # It's an . Error
-        when char == '.'
-          throw ParseException.new
         # Something else
         else
-          throw ParseException.new
+          throw ParseException.new(line, index, char, 'Next character not numeric')
         end
         
         #
@@ -211,7 +241,7 @@ def parse string
           token = nil
         # Something invalid
         else
-          throw ParseException.new
+          throw ParseException.new(line, index + 1, next_char,)
         end      
       end
       
@@ -221,7 +251,10 @@ def parse string
       case
       when @numeric.include?(char)
         token = MInteger.new(char)
+      when char == '"'
+        token = MString.new(char)
       end 
+      
     end    
     
   end
