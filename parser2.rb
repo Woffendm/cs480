@@ -99,7 +99,6 @@ class Parser
   ID_START = LOWER_ALPHA + UPPER_ALPHA + ['_']
   ID_CONTENT = ID_START + NUMERIC
 
-# DEAL WITH END OF LINE / FILE
 # Note that 'next' is the same as repeating the current character. 
 def self.parse string, nofail=true, quite=true, line=0
   # Turn that mofo into an array

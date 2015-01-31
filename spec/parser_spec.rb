@@ -21,14 +21,7 @@ describe Parser do
     to eq("( x int ) ( := x 9 )")
   end
   
-  
-  it 'can make ids out of partial keywords' do
-    data = "strin stdou"
-    expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-    to eq("strin stdou")
     
-  end
-  
 
   it 'can parse really difficult things correctly' do
     data = "if+string/stdout**notandbool<=:=and"
