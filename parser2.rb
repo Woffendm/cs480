@@ -109,8 +109,11 @@ end
 
 
 
+
+class Parser
+
 # Note that 'next' is the same as repeating the current character. 
-def parse string
+def self.parse string
   # Turn that mofo into an array
   line = 0
   index = 0
@@ -225,8 +228,9 @@ def parse string
 end
 
 
-def run string
+def self.run string
   puts parse(string).map{|t| t.to_s}
 end
 
 
+end
