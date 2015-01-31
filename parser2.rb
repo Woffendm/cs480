@@ -1,7 +1,7 @@
 # These represent lexographical ranges for characters. It's easier than making an array of actual characters by hand.
 @lower_alpha = (97..122).map{ |i| i.chr }
 @upper_alpha = (65..90).map{ |i| i.chr }
-@numeric = (48..57).map{ |i| i.chr }
+NUMERIC = (48..57).map{ |i| i.chr }
 @ops = ['+', '-', '*', '/', '%', '^', '=', '<', '>', '!']
 
 
@@ -108,13 +108,21 @@ end
 
 
 class Parser
+  LOWER_ALPHA = (97..122).map{ |i| i.chr }
+  UPPER_ALPHA = (65..90).map{ |i| i.chr }
+  NUMERIC = (48..57).map{ |i| i.chr }
 
+
+# DEAL WITH END OF LINE / FILE
 # Note that 'next' is the same as repeating the current character. 
 def self.parse string, nofail=true, quite=true
   # Turn that mofo into an array
+  string = string.each_char.to_a
   line = 0
   index = 0
-  string = string.each_char.to_a
+  is_integer = false
+  is_real = false
+  is_string = false
   token = nil
   tokens = []
   while index <= string.length
@@ -155,8 +163,6 @@ def self.parse string, nofail=true, quite=true
           tokens << Paren.new(char)
         when '!'
           token = char
-        when '"'
-          token = char
         when 'a'
           token = char
         when 'b'
@@ -179,8 +185,20 @@ def self.parse string, nofail=true, quite=true
           token = char
         when 'w'
           token = char
+        when '"'
+          token = char
+          is_string = true
+        #
+        # Cases with ranges of characters
+        #
         else
-          throw ParseException.new line, index, char
+          case
+          when NUMERIC.include?(char)
+            token = char
+            is_integer = true
+          else
+            throw ParseException.new line, index, char
+          end
         end
       when '>'
         case char
@@ -608,9 +626,55 @@ def self.parse string, nofail=true, quite=true
           token = nil
           throw ParseException.new line, index, string
         end
-        
+      #
+      # Non-keywords
+      #
+      else
+        #
+        # String
+        #
+        case
+        when is_string
+          case char
+          when '"'
+            tokens << MString.new(token + char)
+            token = nil
+            is_string = false
+          else
+            token += char
+          end
+        #
+        # Integer
+        #
+        when is_integer
+          case
+          when NUMERIC.include?(char)
+            token += char
+          when char == '.' && NUMERIC.include?(next_char)
+            is_integer = false
+            is_real = true
+            token += char
+          else
+            tokens << MInteger.new(token)
+            index -= 1
+            token = nil
+            is_integer = false
+          end
+        #
+        # Real
+        #
+        when is_real
+          case
+          when NUMERIC.include?(char)
+            token += char
+          else
+            tokens << MReal.new(token)
+            index -= 1
+            token = nil
+            is_real = false
+          end
+        end  
       end
-      
     # Rescue parse errors or let them DIE
     rescue Exception => e
       if nofail
@@ -622,7 +686,7 @@ def self.parse string, nofail=true, quite=true
 
     index += 1
   end  
-    
+
   return tokens
 end
 
