@@ -21,6 +21,8 @@ end
 class Operator < Token
 end
 
+class Paren < Token
+end
 
 class Comparison < Token
 end
@@ -148,9 +150,9 @@ def self.parse string, nofail=true, quite=true
         when ':'
           token = char
         when '('
-          tokens << Token.new(char)
+          tokens << Paren.new(char)
         when ')'
-          tokens << Token.new(char)
+          tokens << Paren.new(char)
         when '!'
           token = char
         when '"'
@@ -164,6 +166,8 @@ def self.parse string, nofail=true, quite=true
         when 'f'
           token = char
         when 'i'
+          token = char
+        when 'l'
           token = char
         when 'n'
           token = char
@@ -197,6 +201,16 @@ def self.parse string, nofail=true, quite=true
           tokens << Comparison.new(token)
           token = nil
           next
+        end
+      when ':'
+        case char
+        when '='
+          tokens << MAssign.new(token + char)
+          token = nil
+        else
+          index -= 1
+          token = nil
+          throw ParseException.new line, index, string
         end
       when '!'
         case char
@@ -349,6 +363,28 @@ def self.parse string, nofail=true, quite=true
           throw ParseException.new line, index, string
         end
       #
+      # let
+      #
+      when 'l'
+        case char
+        when 'e'
+          token += char
+        else
+          index -= 1
+          token = nil
+          throw ParseException.new line, index, string
+        end
+      when 'le'
+        case char
+        when 't'
+          tokens << MLet.new(token + char)
+          token = nil
+        else
+          index -= 2
+          token = nil
+          throw ParseException.new line, index, string
+        end
+      #
       # not
       #
       when 'n'
@@ -384,7 +420,7 @@ def self.parse string, nofail=true, quite=true
           throw ParseException.new line, index, string
         end
       #
-      # sin / string
+      # sin / stdout / string
       #
       when 's'
         case char
@@ -397,6 +433,9 @@ def self.parse string, nofail=true, quite=true
           token = nil
           throw ParseException.new line, index, string
         end
+      #
+      # sin
+      #
       when 'si'
         case char
         when 'n'
@@ -411,11 +450,47 @@ def self.parse string, nofail=true, quite=true
         case char
         when 'r'
           token += char
+        when 'd'
+          token += char
         else
           index -= 2
           token = nil
           throw ParseException.new line, index, string
         end
+      #
+      # stdout
+      #
+      when 'std'
+        case char
+        when 'o'
+          token += char
+        else
+          index -= 3
+          token = nil
+          throw ParseException.new line, index, string
+        end
+      when 'stdo'
+        case char
+        when 'u'
+          token += char
+        else
+          index -= 4
+          token = nil
+          throw ParseException.new line, index, string
+        end
+      when 'stdou'
+        case char
+        when 't'
+          tokens << Type.new(token + char)
+          token = nil
+        else
+          index -= 5
+          token = nil
+          throw ParseException.new line, index, string
+        end
+      #
+      # string
+      #
       when 'str'
         case char
         when 'i'
@@ -458,6 +533,9 @@ def self.parse string, nofail=true, quite=true
           token = nil
           throw ParseException.new line, index, string
         end
+      #
+      # tan
+      #
       when 'ta'
         case char
         when 'n'
@@ -468,6 +546,9 @@ def self.parse string, nofail=true, quite=true
           token = nil
           throw ParseException.new line, index, string
         end
+      #
+      # true
+      #
       when 'tr'
         case char
         when 'u'

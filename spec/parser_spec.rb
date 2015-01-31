@@ -14,8 +14,15 @@ describe Parser do
       expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
       to eq("")
     end
-    
   end
+
+
+  it 'can parse really difficult things correctly' do
+    data = "if+string/stdout**notandbool<=:=and"
+    expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+    to eq("if + string / stdout * * not and bool <= := and")
+  end
+
   
   context 'can parse:' do
   
@@ -167,6 +174,28 @@ describe Parser do
     
     
     
+    context 'let:' do
+      it 'just one' do
+        data = "let"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("let")
+      end
+    
+      it 'multiple' do
+        data = "letlet let"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("let let let")
+      end
+      
+      it 'with partials' do
+        data = "lleletlxlex"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("let")
+      end
+    end
+    
+    
+    
     context 'not:' do
       it 'just one' do
         data = "not"
@@ -228,6 +257,28 @@ describe Parser do
         data = "ssisinsxsix"
         expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
         to eq("sin")
+      end
+    end
+    
+    
+    
+    context 'stdout:' do
+      it 'just one' do
+        data = "stdout"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("stdout")
+      end
+    
+      it 'multiple' do
+        data = "stdoutstdout stdout"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("stdout stdout stdout")
+      end
+      
+      it 'with partials' do
+        data = "sststdstdostdoustdoutsxstxstdxstdoxstdoux"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("stdout")
       end
     end
     
