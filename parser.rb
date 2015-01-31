@@ -2,6 +2,7 @@
 @lower_alpha = (97..122).map{ |i| i.chr }
 @upper_alpha = (65..90).map{ |i| i.chr }
 @numeric = (48..57).map{ |i| i.chr }
+@ops = ['+', '-', '*', '/', '%', '^', '=', '<', '>', '!']
 
 # TODO: Make this mixin actually work. The class constant doesn't work right now.
 module HasOps
@@ -261,3 +262,7 @@ def parse string
   
   return tokens
 end
+
+
+
+
