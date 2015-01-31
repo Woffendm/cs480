@@ -5,20 +5,30 @@ quiet = true
 
 describe Parser do
   
-  context 'can keep parsing if:' do    
-    it 'has the start of something valid, then it fails, but there was something valid inside it' do
-      data = "bocosboocos"
-      expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-      to eq("cos cos")
-    end
-    
+  context 'can keep parsing if:' do        
     it 'all invalid' do
       data = "~!?"
-      expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
+      expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
       to eq("")
     end
   end
+  
+  
 
+  it 'can parse valid stuff in our teaching language' do
+    data = "( x int)\n(:= x 9)"
+    expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
+    to eq("( x int ) ( := x 9 )")
+  end
+  
+  
+  it 'can make ids out of partial keywords' do
+    data = "strin stdou"
+    expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
+    to eq("strin stdou")
+    
+  end
+  
 
   it 'can parse really difficult things correctly' do
     data = "if+string/stdout**notandbool<=:=and"
@@ -88,7 +98,7 @@ describe Parser do
       
       it 'behaves properly when presented with multiple periods' do
         data = '1.23.4.5.67.8'
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
+        expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
         to eq('1.23 4.5 67.8')
       end        
     end
@@ -122,12 +132,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("and and and")
       end
-      
-      it 'with partials' do
-        data = "aanandanr"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("and")
-      end
     end
     
     
@@ -143,12 +147,6 @@ describe Parser do
         data = "boolbool bool"
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("bool bool bool")
-      end
-      
-      it 'with partials' do
-        data = "bbobooboolbozboox"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("bool")
       end
     end
     
@@ -166,12 +164,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("cos cos cos")
       end
-      
-      it 'with partials' do
-        data = "ccocosczcox"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("cos")
-      end
     end
     
     
@@ -187,12 +179,6 @@ describe Parser do
         data = "falsefalse false"
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("false false false")
-      end
-      
-      it 'with partials' do
-        data = "falsfalse"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("false")
       end
     end
     
@@ -210,12 +196,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("if if if")
       end
-      
-      it 'with partials' do
-        data = "iifix"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("if")
-      end
     end
     
     
@@ -231,12 +211,6 @@ describe Parser do
         data = "intint int"
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("int int int")
-      end
-      
-      it 'with partials' do
-        data = "iinintixinx"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("int")
       end
     end
     
@@ -254,12 +228,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("let let let")
       end
-      
-      it 'with partials' do
-        data = "lleletlxlex"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("let")
-      end
     end
     
     
@@ -275,12 +243,6 @@ describe Parser do
         data = "notnot not"
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("not not not")
-      end
-      
-      it 'with partials' do
-        data = "nnonotnxnox"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("not")
       end
     end
     
@@ -298,12 +260,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("or or or")
       end
-      
-      it 'with partials' do
-        data = "oorox"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("or")
-      end
     end
     
     
@@ -319,12 +275,6 @@ describe Parser do
         data = "sinsin sin"
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("sin sin sin")
-      end
-      
-      it 'with partials' do
-        data = "ssisinsxsix"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("sin")
       end
     end
     
@@ -342,12 +292,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("stdout stdout stdout")
       end
-      
-      it 'with partials' do
-        data = "sststdstdostdoustdoutsxstxstdxstdoxstdoux"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("stdout")
-      end
     end
     
     
@@ -363,12 +307,6 @@ describe Parser do
         data = "stringstring string"
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("string string string")
-      end
-      
-      it 'with partials' do
-        data = "sststrstristrinstringsxstxstrxstrixstrinx"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("string")
       end
     end
     
@@ -386,12 +324,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("tan tan tan")
       end
-      
-      it 'with partials' do
-        data = "ttatantxtax"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("tan")
-      end
     end
     
     
@@ -408,12 +340,6 @@ describe Parser do
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("true true true")
       end
-      
-      it 'with partials' do
-        data = "ttrtrutruetxtrxtrux"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("true")
-      end
     end
     
     
@@ -429,12 +355,6 @@ describe Parser do
         data = "whilewhile while"
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq("while while while")
-      end
-      
-      it 'with partials' do
-        data = "wwhwhiwhilwhilewxwhxwhixwhilx"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("while")
       end
     end
     

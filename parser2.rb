@@ -96,18 +96,19 @@ class Parser
   LOWER_ALPHA = (97..122).map{ |i| i.chr }
   UPPER_ALPHA = (65..90).map{ |i| i.chr }
   NUMERIC = (48..57).map{ |i| i.chr }
-
+  ID_START = LOWER_ALPHA + UPPER_ALPHA + ['_']
+  ID_CONTENT = ID_START + NUMERIC
 
 # DEAL WITH END OF LINE / FILE
 # Note that 'next' is the same as repeating the current character. 
-def self.parse string, nofail=true, quite=true
+def self.parse string, nofail=true, quite=true, line=0
   # Turn that mofo into an array
   string = string.each_char.to_a
-  line = 0
   index = 0
   is_integer = false
   is_real = false
   is_string = false
+  is_id = false
   token = nil
   tokens = []
   while index <= string.length
@@ -121,6 +122,10 @@ def self.parse string, nofail=true, quite=true
         when nil
           break
         when ' '
+          # do nothing
+        when "\n"
+          # do nothing
+        when "\t"
           # do nothing
         when '+'
           tokens << Operator.new(char)
@@ -181,6 +186,9 @@ def self.parse string, nofail=true, quite=true
           when NUMERIC.include?(char)
             token = char
             is_integer = true
+          when ID_START.include?(char)
+            token = char
+            is_id = true
           else
             throw ParseException.new line, index, char
           end
@@ -233,6 +241,12 @@ def self.parse string, nofail=true, quite=true
         when 'n'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -243,6 +257,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Logic.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -255,6 +276,13 @@ def self.parse string, nofail=true, quite=true
         when 'o'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -264,6 +292,13 @@ def self.parse string, nofail=true, quite=true
         when 'o'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -274,6 +309,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Type.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 3
           token = nil
           throw ParseException.new line, index, string
@@ -286,6 +328,13 @@ def self.parse string, nofail=true, quite=true
         when 'o'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -296,6 +345,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Function.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -308,6 +364,13 @@ def self.parse string, nofail=true, quite=true
         when 'a'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -317,6 +380,13 @@ def self.parse string, nofail=true, quite=true
         when 'l'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -326,6 +396,13 @@ def self.parse string, nofail=true, quite=true
         when 's'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 3
           token = nil
           throw ParseException.new line, index, string
@@ -336,6 +413,13 @@ def self.parse string, nofail=true, quite=true
           tokens << MBoolean.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 4
           token = nil
           throw ParseException.new line, index, string
@@ -351,6 +435,13 @@ def self.parse string, nofail=true, quite=true
         when 'n'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -361,6 +452,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Type.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -373,6 +471,13 @@ def self.parse string, nofail=true, quite=true
         when 'e'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -383,6 +488,13 @@ def self.parse string, nofail=true, quite=true
           tokens << MLet.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -395,6 +507,13 @@ def self.parse string, nofail=true, quite=true
         when 'o'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -405,6 +524,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Logic.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -418,6 +544,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Logic.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -432,6 +565,13 @@ def self.parse string, nofail=true, quite=true
         when 't'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -445,6 +585,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Function.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -456,6 +603,13 @@ def self.parse string, nofail=true, quite=true
         when 'd'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -468,6 +622,13 @@ def self.parse string, nofail=true, quite=true
         when 'o'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 3
           token = nil
           throw ParseException.new line, index, string
@@ -477,6 +638,13 @@ def self.parse string, nofail=true, quite=true
         when 'u'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 4
           token = nil
           throw ParseException.new line, index, string
@@ -487,6 +655,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Type.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 5
           token = nil
           throw ParseException.new line, index, string
@@ -499,6 +674,13 @@ def self.parse string, nofail=true, quite=true
         when 'i'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 3
           token = nil
           throw ParseException.new line, index, string
@@ -508,6 +690,13 @@ def self.parse string, nofail=true, quite=true
         when 'n'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 4
           token = nil
           throw ParseException.new line, index, string
@@ -518,6 +707,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Type.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 5
           token = nil
           throw ParseException.new line, index, string
@@ -532,6 +728,13 @@ def self.parse string, nofail=true, quite=true
         when 'r'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -545,6 +748,13 @@ def self.parse string, nofail=true, quite=true
           tokens << Function.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -557,6 +767,13 @@ def self.parse string, nofail=true, quite=true
         when 'u'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -567,6 +784,13 @@ def self.parse string, nofail=true, quite=true
           tokens << MBoolean.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 3
           token = nil
           throw ParseException.new line, index, string
@@ -579,6 +803,13 @@ def self.parse string, nofail=true, quite=true
         when 'h'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -588,6 +819,13 @@ def self.parse string, nofail=true, quite=true
         when 'i'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -597,6 +835,13 @@ def self.parse string, nofail=true, quite=true
         when 'l'
           token += char
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 3
           token = nil
           throw ParseException.new line, index, string
@@ -607,6 +852,13 @@ def self.parse string, nofail=true, quite=true
           tokens << MWhile.new(token + char)
           token = nil
         else
+          if ID_CONTENT.include?(char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          
           index -= 4
           token = nil
           throw ParseException.new line, index, string
@@ -658,11 +910,29 @@ def self.parse string, nofail=true, quite=true
             token = nil
             is_real = false
           end
+        #
+        # Id
+        #
+        when is_id
+          case
+          when ID_CONTENT.include?(char)
+            token += char
+          else
+            tokens << Id.new(token)
+            index -= 1
+            token = nil
+            is_id = false
+          end
         end  
+        
       end
     # Rescue parse errors or let them DIE
     rescue Exception => e
       if nofail
+        is_integer = false
+        is_real = false
+        is_string = false
+        is_id = false
         puts e unless quite
       else
         raise e
@@ -676,8 +946,18 @@ def self.parse string, nofail=true, quite=true
 end
 
 
-def self.run string
-  puts parse(string).map{|t| t.to_s}
+def self.parse_file file
+  tokens = []
+  line_no = 0
+  f = File.open(file)
+  
+  f.each_line do |line|
+    tokens += self.parse(line, false, false, line_no)
+    line_no += 1
+  end
+  
+  f.close
+  puts tokens.map {|t| "#{t.class} #{t.val}"}.join(", ")
 end
 
 
