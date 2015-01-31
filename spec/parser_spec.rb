@@ -13,7 +13,7 @@ describe Parser do
     end
     
     it 'all invalid' do
-      data = "zxy~?|"
+      data = "~!?"
       expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
       to eq("")
     end

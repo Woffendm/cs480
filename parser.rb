@@ -1,3 +1,8 @@
+#
+# => HEY ME!!!!!!!!!! This file is just here for reference in case you need ideas from it.
+# The actual file that works is parser2.rb
+#
+
 # These represent lexographical ranges for characters. It's easier than making an array of actual characters by hand.
 @lower_alpha = (97..122).map{ |i| i.chr }
 @upper_alpha = (65..90).map{ |i| i.chr }

@@ -1,8 +1,9 @@
-# These represent lexographical ranges for characters. It's easier than making an array of actual characters by hand.
-@lower_alpha = (97..122).map{ |i| i.chr }
-@upper_alpha = (65..90).map{ |i| i.chr }
-NUMERIC = (48..57).map{ |i| i.chr }
-@ops = ['+', '-', '*', '/', '%', '^', '=', '<', '>', '!']
+#
+# => HEY ME!!!!!!!!!! This file includes all parser junk for Milestone 2.
+# The main thing you want is the Parser class.
+# Remember to run tests when you make changes!
+#
+
 
 
 class Token
@@ -17,6 +18,8 @@ class Token
   end
 end
 
+class Id < Token
+end
 
 class Operator < Token
 end
@@ -36,13 +39,11 @@ class Function < Token
 end
 
 
-
 class Type < Token
 end
 
 
 class MBoolean < Type
-  
 end
 
 
@@ -55,22 +56,6 @@ end
 
 
 class MString < Type
-end
-
-
-class Constant < Token
-end
-
-
-class Variable < Token
-end
-
-
-class VariableList < Token
-end
-
-
-class Expression < Token
 end
 
 
