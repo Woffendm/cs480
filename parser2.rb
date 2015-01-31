@@ -108,11 +108,8 @@ class ParseException < Exception
 end
 
 
-# Decide type based on first value
-# Look at next value
-# If next value is valid for this type, add it and continue
-# Else, save current token, clear the space for the next one.
-# All tokens' 'val' field is a string for now.
+
+# Note that 'next' is the same as repeating the current character. 
 def parse string
   # Turn that mofo into an array
   line = 0
@@ -121,6 +118,7 @@ def parse string
   token = nil
   tokens = []
   while index <= string.length
+    puts index
     char = string[index]
     next_char = string[index + 1]
     case token
@@ -156,6 +154,26 @@ def parse string
         token = char
       when 'a'
         token = char
+      when 'b'
+        token = char
+      when 'c'
+        token = char
+      when 'f'
+        token = char
+      when 'i'
+        token = char
+      when 'n'
+        token = char
+      when 'o'
+        token = char
+      when 's'
+        token = char
+      when 't'
+        token = char
+      when 'w'
+        token = char
+      else
+        ParseException.new line, index, char
       end
     when '>'
       case char
@@ -187,6 +205,17 @@ def parse string
         token = nil
         next
       end
+    when 'a'
+      case char
+      when 'n'
+        token += char
+      else
+        ParseException.new line, index - 1, token
+        token = nil
+        next
+      end
+      
+      
     end
     
     index += 1
