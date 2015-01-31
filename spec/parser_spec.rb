@@ -1,6 +1,22 @@
 require_relative '../parser2'
 
 describe Parser do
+  
+  context 'can keep parsing if:' do    
+    it 'has the start of something valid, then it fails, but there was something valid inside it' do
+      data = "bocosboocos"
+      expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+      to eq("cos cos")
+    end
+    
+    it 'all invalid' do
+      data = "zxy~?|"
+      expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+      to eq("")
+    end
+    
+  end
+  
   context 'can parse:' do
   
     context 'operators:' do
@@ -82,6 +98,227 @@ describe Parser do
         to eq("cos")
       end
     end
+    
+    
+    
+    context 'false:' do
+      it 'just one' do
+        data = "false"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("false")
+      end
+    
+      it 'multiple' do
+        data = "falsefalse false"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("false false false")
+      end
+      
+      it 'with partials' do
+        data = "falsfalse"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("false")
+      end
+    end
+    
+    
+    
+    context 'if:' do
+      it 'just one' do
+        data = "if"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("if")
+      end
+    
+      it 'multiple' do
+        data = "ifif if"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("if if if")
+      end
+      
+      it 'with partials' do
+        data = "iifix"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("if")
+      end
+    end
+    
+    
+    
+    context 'int:' do
+      it 'just one' do
+        data = "int"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("int")
+      end
+    
+      it 'multiple' do
+        data = "intint int"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("int int int")
+      end
+      
+      it 'with partials' do
+        data = "iinintixinx"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("int")
+      end
+    end
+    
+    
+    
+    context 'not:' do
+      it 'just one' do
+        data = "not"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("not")
+      end
+    
+      it 'multiple' do
+        data = "notnot not"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("not not not")
+      end
+      
+      it 'with partials' do
+        data = "nnonotnxnox"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("not")
+      end
+    end
+    
+    
+    
+    context 'or:' do
+      it 'just one' do
+        data = "or"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("or")
+      end
+    
+      it 'multiple' do
+        data = "oror or"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("or or or")
+      end
+      
+      it 'with partials' do
+        data = "oorox"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("or")
+      end
+    end
+    
+    
+    
+    context 'sin:' do
+      it 'just one' do
+        data = "sin"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("sin")
+      end
+    
+      it 'multiple' do
+        data = "sinsin sin"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("sin sin sin")
+      end
+      
+      it 'with partials' do
+        data = "ssisinsxsix"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("sin")
+      end
+    end
+    
+    
+    
+    context 'string:' do
+      it 'just one' do
+        data = "string"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("string")
+      end
+    
+      it 'multiple' do
+        data = "stringstring string"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("string string string")
+      end
+      
+      it 'with partials' do
+        data = "sststrstristrinstringsxstxstrxstrixstrinx"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("string")
+      end
+    end
+    
+    
+    
+    context 'tan:' do
+      it 'just one' do
+        data = "tan"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("tan")
+      end
+    
+      it 'multiple' do
+        data = "tantan tan"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("tan tan tan")
+      end
+      
+      it 'with partials' do
+        data = "ttatantxtax"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("tan")
+      end
+    end
+    
+    
+    
+    context 'true:' do
+      it 'just one' do
+        data = "true"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("true")
+      end
+    
+      it 'multiple' do
+        data = "truetrue true"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("true true true")
+      end
+      
+      it 'with partials' do
+        data = "ttrtrutruetxtrxtrux"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("true")
+      end
+    end
+    
+    
+    
+    context 'while:' do
+      it 'just one' do
+        data = "while"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("while")
+      end
+    
+      it 'multiple' do
+        data = "whilewhile while"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("while while while")
+      end
+      
+      it 'with partials' do
+        data = "wwhwhiwhilwhilewxwhxwhixwhilx"
+        expect(Parser.parse(data).map{|t| t.to_s}.join(" ")).
+        to eq("while")
+      end
+    end
+    
     
   end
 end
