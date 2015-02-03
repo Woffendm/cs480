@@ -24,9 +24,9 @@ describe Parser do
     
 
   it 'can parse really difficult things correctly' do
-    data = "if+string/stdout**notandbool<=:=and"
+    data = "if+string/stdout**not and bool<=:=and id"
     expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-    to eq("if + string / stdout * * not and bool <= := and")
+    to eq("if + string / stdout * * not and bool <= := and id")
   end
 
   
@@ -62,7 +62,7 @@ describe Parser do
       end 
       
       it 'tokenizes on keywords' do
-        data = '1+23-45sin67'
+        data = '1+23-45sin 67'
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq('1 + 23 - 45 sin 67')
       end      
@@ -84,7 +84,7 @@ describe Parser do
       end 
       
       it 'tokenizes on keywords' do
-        data = '1.23+4.5sin67.8'
+        data = '1.23+4.5sin 67.8'
         expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
         to eq('1.23 + 4.5 sin 67.8')
       end    
@@ -121,9 +121,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "andand and"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("and and and")
+        data = "a an and aa ana anda"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Logic, Id, Id, Id])
       end
     end
     
@@ -137,9 +137,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "boolbool bool"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("bool bool bool")
+        data = "b bo boo bool ba boa booa boola"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Id, Type, Id, Id, Id, Id])
       end
     end
     
@@ -153,9 +153,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "coscos cos"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("cos cos cos")
+        data = "c co cos ca coa cosa"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Function, Id, Id, Id])
       end
     end
     
@@ -169,9 +169,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "falsefalse false"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("false false false")
+        data = "f fa fal fals false fx fax falx falsx falsex"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Id, Id, MBoolean, Id, Id, Id, Id, Id])
       end
     end
     
@@ -185,9 +185,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "ifif if"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("if if if")
+        data = "i if ifa"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, MIf, Id])
       end
     end
     
@@ -201,9 +201,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "intint int"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("int int int")
+        data = "in int intx"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Type, Id])
       end
     end
     
@@ -217,9 +217,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "letlet let"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("let let let")
+        data = "l le let la lea leta"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, MLet, Id, Id, Id])
       end
     end
     
@@ -233,9 +233,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "notnot not"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("not not not")
+        data = "n no not nota"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Logic, Id])
       end
     end
     
@@ -249,9 +249,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "oror or"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("or or or")
+        data = "o or ora"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Logic, Id])
       end
     end
     
@@ -265,9 +265,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "sinsin sin"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("sin sin sin")
+        data = "s si sin sina"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Function, Id])
       end
     end
     
@@ -281,9 +281,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "stdoutstdout stdout"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("stdout stdout stdout")
+        data = "s st std stdo stdou stdout stdouta"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Id, Id, Id, Function, Id])
       end
     end
     
@@ -297,9 +297,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "stringstring string"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("string string string")
+        data = "s st str stri strin string stringa"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Id, Id, Id, Type, Id])
       end
     end
     
@@ -313,9 +313,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "tantan tan"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("tan tan tan")
+        data = "t ta tan tana"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Function, Id])
       end
     end
     
@@ -329,9 +329,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "truetrue true"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("true true true")
+        data = "t tr tru true trua"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Id, MBoolean, Id])
       end
     end
     
@@ -345,9 +345,9 @@ describe Parser do
       end
     
       it 'multiple' do
-        data = "whilewhile while"
-        expect(Parser.parse(data, nofail, quiet).map{|t| t.to_s}.join(" ")).
-        to eq("while while while")
+        data = "w wh whi whil while whila"
+        expect(Parser.parse(data, nofail, quiet).map{|t| t.class}).
+        to eq([Id, Id, Id, Id, MWhile, Id])
       end
     end
     

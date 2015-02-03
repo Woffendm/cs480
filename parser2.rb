@@ -239,8 +239,12 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'n'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
-          if ID_CONTENT.include?(char) 
+          if ID_CONTENT.include?(char)
             token += char
             is_id = true
             index += 1
@@ -253,8 +257,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'an'
         case char
         when 'd'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Logic.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -262,7 +276,6 @@ def self.parse string, nofail=true, quite=true, line=0
             index += 1
             next
           end
-          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -274,6 +287,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'o'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -281,7 +298,6 @@ def self.parse string, nofail=true, quite=true, line=0
             index += 1
             next
           end
-          
           index -= 1
           token = nil
           throw ParseException.new line, index, string
@@ -290,6 +306,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'o'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -297,7 +317,6 @@ def self.parse string, nofail=true, quite=true, line=0
             index += 1
             next
           end
-          
           index -= 2
           token = nil
           throw ParseException.new line, index, string
@@ -305,8 +324,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'boo'
         case char
         when 'l'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Type.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -314,7 +343,6 @@ def self.parse string, nofail=true, quite=true, line=0
             index += 1
             next
           end
-          
           index -= 3
           token = nil
           throw ParseException.new line, index, string
@@ -326,6 +354,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'o'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -341,8 +373,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'co'
         case char
         when 's'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Function.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -362,6 +404,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'a'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -378,6 +424,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'l'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -394,6 +444,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 's'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -409,8 +463,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'fals'
         case char
         when 'e'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << MBoolean.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -429,10 +493,20 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'i'
         case char
         when 'f'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << MIf.new(token + char)
           token = nil
         when 'n'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -448,8 +522,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'in'
         case char
         when 't'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Type.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -469,6 +553,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'e'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -484,8 +572,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'le'
         case char
         when 't'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << MLet.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -505,6 +603,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'o'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -520,8 +622,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'no'
         case char
         when 't'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Logic.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -540,8 +652,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'o'
         case char
         when 'r'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Logic.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -554,6 +676,76 @@ def self.parse string, nofail=true, quite=true, line=0
           token = nil
           throw ParseException.new line, index, string
         end
+        #
+        # real
+        #
+        when 'r'
+          case char
+          when 'e'
+            token += char
+          when ' '
+            tokens << Id.new(token)
+            token = nil
+            is_id = false
+          else
+            if ID_CONTENT.include?(char) 
+              token += char
+              is_id = true
+              index += 1
+              next
+            end
+
+            index -= 1
+            token = nil
+            throw ParseException.new line, index, string
+          end
+        when 're'
+          case char
+          when 'a'
+            token += char
+          when ' '
+            tokens << Id.new(token)
+            token = nil
+            is_id = false
+          else
+            if ID_CONTENT.include?(char) 
+              token += char
+              is_id = true
+              index += 1
+              next
+            end
+
+            index -= 2
+            token = nil
+            throw ParseException.new line, index, string
+          end
+        when 'rea'
+          case char
+          when 'l'
+            if ID_CONTENT.include?(next_char) 
+              token += char
+              is_id = true
+              index += 1
+              next
+            end
+            tokens << Type.new(token + char)
+            token = nil
+          when ' '
+            tokens << Id.new(token)
+            token = nil
+            is_id = false
+          else
+            if ID_CONTENT.include?(char) 
+              token += char
+              is_id = true
+              index += 1
+              next
+            end
+
+            index -= 3
+            token = nil
+            throw ParseException.new line, index, string
+          end
       #
       # sin / stdout / string
       #
@@ -563,6 +755,10 @@ def self.parse string, nofail=true, quite=true, line=0
           token += char
         when 't'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -581,8 +777,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'si'
         case char
         when 'n'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Function.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -601,6 +807,10 @@ def self.parse string, nofail=true, quite=true, line=0
           token += char
         when 'd'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -620,6 +830,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'o'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -636,6 +850,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'u'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -651,8 +869,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'stdou'
         case char
         when 't'
-          tokens << Type.new(token + char)
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
+          tokens << Function.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -672,6 +900,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'i'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -688,6 +920,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'n'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -703,8 +939,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'strin'
         case char
         when 'g'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Type.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -726,6 +972,10 @@ def self.parse string, nofail=true, quite=true, line=0
           token += char
         when 'r'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -744,8 +994,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'ta'
         case char
         when 'n'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << Function.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -765,6 +1025,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'u'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -780,8 +1044,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'tru'
         case char
         when 'e'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << MBoolean.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -801,6 +1075,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'h'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -817,6 +1095,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'i'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -833,6 +1115,10 @@ def self.parse string, nofail=true, quite=true, line=0
         case char
         when 'l'
           token += char
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
@@ -848,8 +1134,18 @@ def self.parse string, nofail=true, quite=true, line=0
       when 'whil'
         case char
         when 'e'
+          if ID_CONTENT.include?(next_char) 
+            token += char
+            is_id = true
+            index += 1
+            next
+          end
           tokens << MWhile.new(token + char)
           token = nil
+        when ' '
+          tokens << Id.new(token)
+          token = nil
+          is_id = false
         else
           if ID_CONTENT.include?(char) 
             token += char
