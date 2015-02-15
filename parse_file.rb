@@ -1,3 +1,3 @@
-require_relative "./parser2.rb"
+require_relative "./parser.rb"
 
-Parser.parse_file ARGV[0]
+Parser.parse_and_print_file ARGV[0]

@@ -1,90 +1,7 @@
-#
-# => HEY ME!!!!!!!!!! This file includes all scanner junk for Milestone 2.
-# The main thing you want is the Scanner class.
-# Remember to run tests when you make changes!
-#
+require_relative './tokens.rb'
 
 
-
-class Token
-  attr_accessor :val
-  
-  def initialize val
-    self.val = val
-  end
-  
-  def to_s
-    "#{val}"
-  end
-end
-
-
-class Id < Token
-end
-
-class Operator < Token
-end
-
-class Paren < Token
-end
-
-class Comparison < Token
-end
-
-
-class Logic < Token
-end
-
-
-class Function < Token
-end
-
-
-class Type < Token
-end
-
-
-class MBoolean < Type
-end
-
-
-class MInteger < Type
-end
-
-
-class MReal < MInteger
-end
-
-
-class MString < Type
-end
-
-
-class Statement < Token
-end
-
-
-class MPrint < Statement
-end
-
-
-class MIf < Statement
-end
-
-
-class MWhile < Statement
-end
-
-
-class MLet < Statement
-end
-
-
-class MAssign < Statement
-end
-
-
-class ParseException < Exception  
+class ScannerException < Exception  
   def initialize line=0, index=0, str='', msg=''
     super "Unexpected character '#{str[index]}' on #{line}:#{index}. #{msg}"
   end
@@ -191,7 +108,7 @@ class Scanner
               token = char
               is_id = true
             else
-              throw ParseException.new line, index, char
+              throw ScannerException.new line, index, char
             end
           end
         when '>'
@@ -222,7 +139,7 @@ class Scanner
           else
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when '!'
           case char
@@ -232,7 +149,7 @@ class Scanner
           else
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # and
@@ -254,7 +171,7 @@ class Scanner
             end
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'an'
           case char
@@ -280,7 +197,7 @@ class Scanner
             end
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # bool
@@ -302,7 +219,7 @@ class Scanner
             end
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'bo'
           case char
@@ -321,7 +238,7 @@ class Scanner
             end
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'boo'
           case char
@@ -347,7 +264,7 @@ class Scanner
             end
             index -= 3
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # cos
@@ -370,7 +287,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'co'
           case char
@@ -397,7 +314,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # false
@@ -420,7 +337,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'fa'
           case char
@@ -440,7 +357,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'fal'
           case char
@@ -460,7 +377,7 @@ class Scanner
             
             index -= 3
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'fals'
           case char
@@ -487,7 +404,7 @@ class Scanner
             
             index -= 4
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # if / int
@@ -519,7 +436,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'in'
           case char
@@ -546,7 +463,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # let
@@ -569,7 +486,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'le'
           case char
@@ -596,7 +513,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # not
@@ -619,7 +536,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'no'
           case char
@@ -646,7 +563,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # or
@@ -676,7 +593,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
           #
           # real
@@ -699,7 +616,7 @@ class Scanner
   
               index -= 1
               token = nil
-              throw ParseException.new line, index, string
+              throw ScannerException.new line, index, string
             end
           when 're'
             case char
@@ -719,7 +636,7 @@ class Scanner
   
               index -= 2
               token = nil
-              throw ParseException.new line, index, string
+              throw ScannerException.new line, index, string
             end
           when 'rea'
             case char
@@ -746,7 +663,7 @@ class Scanner
   
               index -= 3
               token = nil
-              throw ParseException.new line, index, string
+              throw ScannerException.new line, index, string
             end
         #
         # sin / stdout / string
@@ -771,7 +688,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # sin
@@ -801,7 +718,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'st'
           case char
@@ -823,7 +740,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # stdout
@@ -846,7 +763,7 @@ class Scanner
             
             index -= 3
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'stdo'
           case char
@@ -866,7 +783,7 @@ class Scanner
             
             index -= 4
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'stdou'
           case char
@@ -893,7 +810,7 @@ class Scanner
             
             index -= 5
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # string
@@ -916,7 +833,7 @@ class Scanner
             
             index -= 3
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'stri'
           case char
@@ -936,7 +853,7 @@ class Scanner
             
             index -= 4
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'strin'
           case char
@@ -963,7 +880,7 @@ class Scanner
             
             index -= 5
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # tan / true
@@ -988,7 +905,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # tan
@@ -1018,7 +935,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # true
@@ -1041,7 +958,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'tru'
           case char
@@ -1068,7 +985,7 @@ class Scanner
             
             index -= 3
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # while
@@ -1091,7 +1008,7 @@ class Scanner
             
             index -= 1
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'wh'
           case char
@@ -1111,7 +1028,7 @@ class Scanner
             
             index -= 2
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'whi'
           case char
@@ -1131,7 +1048,7 @@ class Scanner
             
             index -= 3
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         when 'whil'
           case char
@@ -1158,7 +1075,7 @@ class Scanner
             
             index -= 4
             token = nil
-            throw ParseException.new line, index, string
+            throw ScannerException.new line, index, string
           end
         #
         # Non-keywords
@@ -1296,7 +1213,7 @@ class Scanner
   end
 
 
-  def self.scan_and_print file
+  def self.scan_and_print_file file
     puts self.scan_file.map {|t| "#{t.class} #{t.val}"}.join(", ") 
   end
 
