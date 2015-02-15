@@ -46,19 +46,19 @@ class Scanner
           when "\t"
             # do nothing
           when '+'
-            tokens << Operator.new(char)
+            tokens << Plus.new(char)
           when '-'
-            tokens << Operator.new(char)
+            tokens << Minus.new(char)
           when '*'
-            tokens << Operator.new(char)
+            tokens << Multiply.new(char)
           when '/'
-            tokens << Operator.new(char)
+            tokens << Divide.new(char)
           when '%'
-            tokens << Operator.new(char)
+            tokens << Modulo.new(char)
           when '^'
-            tokens << Operator.new(char)
+            tokens << Exponent.new(char)
           when '='
-            tokens << Comparison.new(char)
+            tokens << Equal.new(char)
           when '>'
             token = char
           when '<'
@@ -66,9 +66,9 @@ class Scanner
           when ':'
             token = char
           when '('
-            tokens << Paren.new(char)
+            tokens << LeftParen.new(char)
           when ')'
-            tokens << Paren.new(char)
+            tokens << RightParen.new(char)
           when '!'
             token = char
           when 'a'
@@ -114,27 +114,27 @@ class Scanner
         when '>'
           case char
           when '='
-            tokens << Comparison.new(token + char)
+            tokens << GreaterThanEqual.new(token + char)
             token = nil
           else
-            tokens << Comparison.new(token)
+            tokens << GreaterThan.new(token)
             token = nil
             next
           end
         when '<'
           case char
           when '='
-            tokens << Comparison.new(token + char)
+            tokens << LessThanEqual.new(token + char)
             token = nil
           else
-            tokens << Comparison.new(token)
+            tokens << LessThan.new(token)
             token = nil
             next
           end
         when ':'
           case char
           when '='
-            tokens << MAssign.new(token + char)
+            tokens << Assign.new(token + char)
             token = nil
           else
             index -= 1
@@ -144,7 +144,7 @@ class Scanner
         when '!'
           case char
           when '='
-            tokens << Comparison.new(token + char)
+            tokens << NotEqual.new(token + char)
             token = nil
           else
             index -= 1
@@ -182,7 +182,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << Logic.new(token + char)
+            tokens << And.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -298,7 +298,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << Function.new(token + char)
+            tokens << Cos.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -418,7 +418,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << MIf.new(token + char)
+            tokens << If.new(token + char)
             token = nil
           when 'n'
             token += char
@@ -497,7 +497,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << MLet.new(token + char)
+            tokens << Let.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -547,7 +547,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << Logic.new(token + char)
+            tokens << Not.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -577,7 +577,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << Logic.new(token + char)
+            tokens << Or.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -702,7 +702,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << Function.new(token + char)
+            tokens << Sin.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -794,7 +794,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << Function.new(token + char)
+            tokens << Print.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -919,7 +919,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << Function.new(token + char)
+            tokens << Tan.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)
@@ -1059,7 +1059,7 @@ class Scanner
               index += 1
               next
             end
-            tokens << MWhile.new(token + char)
+            tokens << While.new(token + char)
             token = nil
           when ' '
             tokens << Id.new(token)

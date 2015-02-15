@@ -174,7 +174,7 @@ describe Scanner do
       it 'multiple' do
         data = "a an and aa ana anda"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, Logic, Id, Id, Id])
+        to eq([Id, Id, And, Id, Id, Id])
       end
     end
     
@@ -206,7 +206,7 @@ describe Scanner do
       it 'multiple' do
         data = "c co cos ca coa cosa"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, Function, Id, Id, Id])
+        to eq([Id, Id, Cos, Id, Id, Id])
       end
     end
     
@@ -238,7 +238,7 @@ describe Scanner do
       it 'multiple' do
         data = "i if ifa"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, MIf, Id])
+        to eq([Id, If, Id])
       end
     end
     
@@ -270,7 +270,7 @@ describe Scanner do
       it 'multiple' do
         data = "l le let la lea leta"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, MLet, Id, Id, Id])
+        to eq([Id, Id, Let, Id, Id, Id])
       end
     end
     
@@ -286,7 +286,7 @@ describe Scanner do
       it 'multiple' do
         data = "n no not nota"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, Logic, Id])
+        to eq([Id, Id, Not, Id])
       end
     end
     
@@ -302,7 +302,7 @@ describe Scanner do
       it 'multiple' do
         data = "o or ora"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Logic, Id])
+        to eq([Id, Or, Id])
       end
     end
     
@@ -318,7 +318,7 @@ describe Scanner do
       it 'multiple' do
         data = "s si sin sina"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, Function, Id])
+        to eq([Id, Id, Sin, Id])
       end
     end
     
@@ -334,7 +334,7 @@ describe Scanner do
       it 'multiple' do
         data = "s st std stdo stdou stdout stdouta"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, Id, Id, Id, Function, Id])
+        to eq([Id, Id, Id, Id, Id, Print, Id])
       end
     end
     
@@ -366,7 +366,7 @@ describe Scanner do
       it 'multiple' do
         data = "t ta tan tana"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, Function, Id])
+        to eq([Id, Id, Tan, Id])
       end
     end
     
@@ -398,7 +398,7 @@ describe Scanner do
       it 'multiple' do
         data = "w wh whi whil while whila"
         expect(Scanner.scan(data, nofail, quiet).map{|t| t.class}).
-        to eq([Id, Id, Id, Id, MWhile, Id])
+        to eq([Id, Id, Id, Id, While, Id])
       end
     end
     
