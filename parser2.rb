@@ -108,6 +108,7 @@ def self.parse string, nofail=true, quite=true, line=0
   is_real = false
   is_string = false
   is_id = false
+  used_e = false
   token = nil
   tokens = []
   while index <= string.length
@@ -1186,6 +1187,26 @@ def self.parse string, nofail=true, quite=true, line=0
             is_integer = false
             is_real = true
             token += char
+          when (char == 'e' || char == 'E') && !used_e
+            if NUMERIC.include?(next_char) 
+              is_integer = false
+              is_real = true
+              used_e = true
+              token += char
+            elsif (next_char == '+' || next_char == '-') && NUMERIC.include?(string[index + 2]) 
+              is_integer = false
+              is_real = true
+              used_e = true
+              token += char
+              token += next_char
+              index += 2
+              next
+            else
+              tokens << MInteger.new(token)
+              index -= 1
+              token = nil
+              is_integer = false
+            end
           else
             tokens << MInteger.new(token)
             index -= 1
@@ -1199,10 +1220,28 @@ def self.parse string, nofail=true, quite=true, line=0
           case
           when NUMERIC.include?(char)
             token += char
+          when (char == 'e' || char == 'E') && !used_e
+            if NUMERIC.include?(next_char) 
+              used_e = true
+              token += char
+            elsif (next_char == '+' || next_char == '-') && NUMERIC.include?(string[index + 2]) 
+              used_e = true
+              token += char
+              token += next_char
+              index += 2
+              next
+            else
+              tokens << MReal.new(token)
+              index -= 1
+              token = nil
+              used_e = false
+              is_real = false
+            end
           else
             tokens << MReal.new(token)
             index -= 1
             token = nil
+            used_e = false
             is_real = false
           end
         #

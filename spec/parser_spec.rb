@@ -93,7 +93,58 @@ describe Parser do
         data = '1.23.4.5.67.8'
         expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
         to eq('1.23 4.5 67.8')
-      end        
+      end   
+      
+      context 'can deal with stupid C syntax' do
+        it 'INTe+INT' do
+          data = '1e+2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1e+2')
+        end
+        
+        it 'REALe+INT' do
+          data = '1.2e+2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1.2e+2')
+        end
+        
+        it 'REALE+INT' do
+          data = '1.2E+2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1.2E+2')
+        end
+        
+        it 'INTe-INT' do
+          data = '1e-2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1e-2')
+        end
+        
+        it 'REALe-INT' do
+          data = '1.2e-2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1.2e-2')
+        end
+        
+        it 'INTeINT' do
+          data = '1e2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1e2')
+        end
+        
+        it 'REALe+INT' do
+          data = '1.2e2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1.2e2')
+        end
+        
+        it 'INTeINTe2' do
+          data = '1e2e2'
+          expect(Parser.parse(data, true, quiet).map{|t| t.to_s}.join(" ")).
+          to eq('1e2 e2')
+        end
+        
+      end     
     end
   
   
