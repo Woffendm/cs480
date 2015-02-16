@@ -45,7 +45,7 @@ end
 
 class Start3 < Transition
   def self.options
-    return [[RightParen, Start2], [Start, RightParen, Start2]]
+    return [[RightParen, Start2], [Start, RightParen, Start2], [Oper2, Start2]]
   end
 end
 
@@ -66,24 +66,35 @@ class Stmts < Transition
   end
 end
 
+# Minus is not in here since it can be either unary or binary
 class Binops < Transition
-  def self.firsts
-    return []
-  end
   def self.options
-    return [[Binops]]
+    return [[Plus], [Multiply], [Divide], [Modulo], [Exponent], [Equal], [GreaterThan],[LessThan],[LessThanEqual],[GreaterThanEqual],[NotEqual],[Or],[And]]
   end
 end
 
+# Minus is not in here since it can be either unary or binary
 class Unops < Transition
   def self.options
-    return [[Minus], [Not], [Sin], [Cos], [Tan]]
+    return [[Not], [Sin], [Cos], [Tan]]
   end
 end
 
 class Oper < Transition
   def self.options
-    return [[LeftParen, Assign, Id, Oper], [LeftParen, Binops, Oper, Oper], [LeftParen, Unops, Oper], [Constant], [Id]]
+    return [[LeftParen, Oper2], [Constant], [Id]]
+  end
+end
+
+class Oper2 < Transition
+  def self.options
+    return [[Assign, Id, Oper, RightParen], [Binops, Oper, Oper, RightParen], [Unops, Oper, RightParen], [Minus, Oper, TMinus, RightParen]]
+  end
+end
+
+class TMinus < Transition
+  def self.options
+    return [[Oper], [Empty]]
   end
 end
 

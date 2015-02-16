@@ -46,8 +46,8 @@ class Parser
       @stack.pop
     else
       # We just read in the first token of some other transition. Need to resolve that transition 
-      q = stack.pop
-      @stack = self.push_to_stack(q, token)
+      q = @stack.pop
+      self.push_to_stack(q, token)
     end
   end
 
@@ -64,6 +64,8 @@ class Parser
         token = parser.tokens[parser.index].class
         puts "stack:"
         puts parser.stack.to_s
+        puts "token:"
+        puts token.to_s
         tos = parser.stack.pop
 
         # check if we're done
