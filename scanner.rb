@@ -1214,7 +1214,7 @@ class Scanner
 
 
   def self.scan_and_print_file file
-    puts self.scan_file.map {|t| "#{t.class} #{t.val}"}.join(", ") 
+    puts self.scan_file(file).map {|t| "#{t.class} #{t.val}"}.join(", ") 
   end
 
 end

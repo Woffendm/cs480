@@ -3,6 +3,18 @@
 class Token
   attr_accessor :val
   
+  def firsts
+    return [self.class]
+  end
+  
+  def self.firsts
+    return [self]
+  end
+  
+  def token?
+    true
+  end
+  
   def initialize val
     self.val = val
   end
