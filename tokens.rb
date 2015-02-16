@@ -15,6 +15,11 @@ class Token
     true
   end
   
+  def self.token?
+    true
+  end
+  
+  
   def initialize val
     self.val = val
   end
