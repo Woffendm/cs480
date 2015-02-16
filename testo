@@ -1,2 +1,4 @@
 (-(-1 2)) (("hey")) (((true)()))
 (sin "cake")
+
+(stdout (:= x (sin 1)))

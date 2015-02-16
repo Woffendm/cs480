@@ -45,7 +45,7 @@ end
 
 class Start3 < Transition
   def self.options
-    return [[RightParen, Start2], [Start, RightParen, Start2], [Oper2, Start2]]
+    return [[RightParen, Start2], [Start, RightParen, Start2], [Oper2, Start2], [Stmts2, Start2]]
   end
 end
 
@@ -57,14 +57,7 @@ class Expr < Transition
 end
 
 
-class Stmts < Transition
-  def self.firsts
-    return []
-  end
-  def self.options
-    return [[Stmts]]
-  end
-end
+
 
 # Minus is not in here since it can be either unary or binary
 class Binops < Transition
@@ -109,3 +102,51 @@ class TString < Transition
     return [[MString], [MBoolean]]
   end
 end
+
+
+
+
+class Stmts < Transition
+  def self.options
+    return [[LeftParen, Stmts2]]
+  end
+end
+
+class Stmts2 < Transition
+  def self.options
+    return [[If, Expr, Expr, TIf, RightParen], [While, Expr, Exprlist, RightParen],[Print, Oper, RightParen],[Let,LeftParen,Varlist,RightParen,RightParen]]
+  end
+end
+
+
+class Exprlist < Transition
+  def self.options
+    return [[Expr, Exprlist2]]
+  end
+end
+
+
+class Exprlist2 < Transition
+  def self.options
+    return [[Exprlist],[Empty]]
+  end
+end
+
+class TIf < Transition
+  def self.options
+    return [[Expr],[Empty]]
+  end
+end
+
+class Varlist < Transition
+  def self.options
+    return [[LeftParen, Id, Type,RightParen,Varlist2]]
+  end
+end
+
+class Varlist2 < Transition
+  def self.options
+    return [[Varlist],[Empty]]
+  end
+end
+
