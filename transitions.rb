@@ -11,7 +11,9 @@ class Transition
     return self.options.map{|o|o.first.firsts}.flatten
   end
   def self.transit token
-    self.options.map{|o|o.first.firsts.include?(token)}.index(true)
+    q = self.options.map{|o|o.first.firsts.include?(token)}
+    puts q.to_s
+    q.index(true)
   end
 end
 
@@ -74,11 +76,8 @@ class Binops < Transition
 end
 
 class Unops < Transition
-  def self.firsts
-    return []
-  end
   def self.options
-    return [[Unops]]
+    return [[Minus], [Not], [Sin], [Cos], [Tan]]
   end
 end
 

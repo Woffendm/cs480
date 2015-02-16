@@ -13,37 +13,58 @@ end
 
 class Parser
   
-  def self.push_to_stack stack, transition, token
-    transition.options[transition.transit(token)].reverse.each do |thing|
-      stack.push thing
+  attr_accessor :stack, :tokens, :index
+  
+  def initialize
+    @stack = Array.new
+    @tokens = Array.new
+    @index = 0
+  end
+  
+  def transit transition, token
+    q = transition.options.map{|o|o.first.firsts.include?(token)}
+    case q.count(true)
+    when 0
+      # No valid transition
+      throw ParseException.new token, "No valid transition"
+    when 1
+      # Easy. One valid transition
+      return q.index(true)
+    else
+      # More than one transition. Need to look ahead
+      return q.index(true)
+      
     end
-    if stack.last.token?
+  end
+  
+  def push_to_stack transition, token
+    transition.options[transit(transition, token)].reverse.each do |thing|
+      @stack.push thing
+    end
+    if @stack.last.token?
       # We just read in the first token. Get rid of it from the stack
-      stack.pop
+      @stack.pop
     else
       # We just read in the first token of some other transition. Need to resolve that transition 
       q = stack.pop
-      stack = self.push_to_stack(stack, q, token)
+      @stack = self.push_to_stack(q, token)
     end
-    return stack
   end
 
 
 
   def self.parse_file file, nofail=false, quiet=false,
-    tokens = Scanner.scan_file(file)
-    stack = Array.new
-    index = 0
-    stack.push Start
+    parser = Parser.new
+    parser.tokens = Scanner.scan_file(file)
+    parser.stack.push Start
    
     
-    while index <= tokens.length
+    while parser.index <= parser.tokens.length
       begin        
-        token = tokens[index].class
-        next_token = tokens[index + 1].class
+        token = parser.tokens[parser.index].class
         puts "stack:"
-        puts stack.to_s
-        tos = stack.pop
+        puts parser.stack.to_s
+        tos = parser.stack.pop
 
         # check if we're done
         if token == NilClass && tos.nil?
@@ -63,7 +84,7 @@ class Parser
           if tos.has_first?(token)
             # keep refining stuff
             # Find out which option to choose
-            push_to_stack stack, tos, token
+            parser.push_to_stack tos, token
           elsif tos.has_first?(Empty)
             puts 'testo'
             # skip the top of the stack since it can be empty.
@@ -83,43 +104,16 @@ class Parser
         end
       end
       
-      index += 1
+      parser.index += 1
     end
    
    
-   # 
-   # while index <= tokens.length
-   #   
-   #   begin
-   #     token = tokens[index]
-   #     next_token = tokens[index + 1]
-   #     
-   #     case token
-   #     when LeftParen
-   #       stack.push RightParen
-   #     when RightParen
-   #       unless stack.pop == RightParen
-   #         throw ParseException.new token
-   #       end
-   #     end
-   #     
-   #   rescue Exception => e
-   #     if nofail
-   #       puts e unless quiet
-   #     else
-   #       raise e
-   #     end
-   #   end
-   #   
-   #   index += 1
-   # end
-   # 
     if nofail
-      stack.each do |failure|
+      parser.stack.each do |failure|
         puts "Error: never received #{failure}"
       end
     else
-      throw ParseException.new stack.first unless stack.empty?
+      throw ParseException.new parser.stack.first unless parser.stack.empty?
     end
   end
 
