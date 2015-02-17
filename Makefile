@@ -1,5 +1,10 @@
 all: stutest.out
 
+install:
+	git clone git@github.com:Woffendm/cs480.git
+	git fetch
+	git checkout -b m3 milestone3
+
 clean:
 	rm -f *.out out.txt
 	ls
