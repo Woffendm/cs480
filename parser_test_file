@@ -1,0 +1,43 @@
+()
+(())
+(()())
+((()())())
+
+
+(:= x 5)
+(- 1.5)
+(+ "hey" "you")
+(sin y)
+
+
+(:= id (- (- 1 2)))
+((:= y x)())
+
+
+1
+"string"
+x
+false
+
+
+(stdout true)
+
+
+(1 1 1 1)
+(x 1 "string" false)
+
+
+(while (< x 2) (- x) (+y 2))
+
+
+(x bool)
+(x integer)(y real)(z string)
+
+
+(let (x bool) (y real))
+
+
+(if 1 2 3)
+(if 1 2)
+(if (< x y) (+ x y) (- x y))
+(if (if 1 2) (if 1 2) (stdout (cos 1)))

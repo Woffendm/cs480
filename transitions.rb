@@ -149,4 +149,3 @@ class Varlist2 < Transition
     return [[Varlist],[Empty]]
   end
 end
-

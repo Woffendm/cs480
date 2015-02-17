@@ -1,7 +1,7 @@
 
 
 class Token
-  attr_accessor :val
+  attr_accessor :val, :index, :line
   
   def firsts
     return [self.class]
@@ -22,6 +22,8 @@ class Token
   
   def initialize val
     self.val = val
+    self.index = $index
+    self.line = $line
   end
   
   def to_s

@@ -7,7 +7,8 @@ class ScannerException < Exception
   end
 end
 
-
+$line
+$index
 
 
 class Scanner
@@ -19,6 +20,7 @@ class Scanner
 
   # Note that 'next' is the same as repeating the current character. 
   def self.scan string, nofail=true, quite=true, line=0
+    $line = line + 1
     # Turn that mofo into an array
     string = string.each_char.to_a
     index = 0
@@ -33,7 +35,8 @@ class Scanner
       begin
         char = string[index]
         next_char = string[index + 1]
-  
+        $index = index + 1
+        
         case token
         when nil
           case char
