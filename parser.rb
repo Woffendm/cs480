@@ -77,8 +77,8 @@ class Parser
       begin        
         actual_token = parser.tokens[parser.index]
         token = actual_token.class
-        puts "stack: #{parser.stack.to_s}" unless quiet
-        puts "token: #{token.to_s}" unless quiet
+        #puts "stack: #{parser.stack.to_s}" unless quiet
+        #puts "token: #{token.to_s}" unless quiet
         tos = parser.stack.pop
 
         # check if we're done
