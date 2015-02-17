@@ -3,11 +3,11 @@ require_relative '../parser.rb'
 
 
 nofail = false
-quiet = true
 
 describe Parser do
   
   context 'can parse' do
+    quiet = false
     
     it 'the test file' do
       Parser.parse_file './spec/test_data/parser_test_file', nofail, quiet
@@ -17,7 +17,7 @@ describe Parser do
   
   
   context 'can NOT parse' do
-    
+    quiet = true
     it 'unclosed parenthesis' do
       expect{Parser.parse_file('./spec/test_data/unclosed_parens', nofail, quiet)}.to raise_error
     end

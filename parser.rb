@@ -28,7 +28,7 @@ class Parser
     @quiet = true
   end
   
-  def transit transition, token, quiet=true
+  def transit transition, token, quiet=false
     q = transition.options.map{|o|o.first.firsts.include?(token)}
     case q.count(true)
     when 0
@@ -71,7 +71,7 @@ class Parser
     parser.tokens = Scanner.scan_file(file)
     parser.stack.push Start
     parser.quiet = quiet
-   
+    depth = 0
     
     while parser.index <= parser.tokens.length
       begin        
@@ -87,6 +87,7 @@ class Parser
         elsif tos.nil?
           throw ParseException.new actual_token, "Tried to pop empty stack."
         end
+        
         
         # If the top of the stack is a godamn token
         if tos.token?
@@ -110,6 +111,22 @@ class Parser
             throw ParseException.new actual_token
           end
         end
+        
+        
+        # Draw the little tree
+        if token == RightParen
+          depth -= 1
+        end
+        
+        if actual_token
+          # Print the tree
+          puts "\t" * depth + token.to_s unless quiet
+        end
+        
+        if token == LeftParen
+          depth += 1
+        end
+
       
       rescue Exception => e
         if nofail
