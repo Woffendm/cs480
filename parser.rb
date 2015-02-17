@@ -19,15 +19,16 @@ end
 
 class Parser
   
-  attr_accessor :stack, :tokens, :index
+  attr_accessor :stack, :tokens, :index, :quiet
   
   def initialize
     @stack = Array.new
     @tokens = Array.new
     @index = 0
+    @quiet = true
   end
   
-  def transit transition, token, index=@index
+  def transit transition, token, quiet=true
     q = transition.options.map{|o|o.first.firsts.include?(token)}
     case q.count(true)
     when 0
@@ -37,45 +38,10 @@ class Parser
       # Easy. One valid transition
       return q.index(true)
     else
-      # Get the possible options
-      options = []
-      q.each_with_index do |t, i|
-        options << transition.options[i] if t
-      end
-      puts "options: #{options}"
-      # Branch out those possible options until we hit options with a leading terminal
-      # matching our token
-      options.each_with_index do |o, i|
-        while !o[0].token?
-          o[0] = o[0].options[transit(o[0], token)]
-          o = o.flatten
-          options[i] = o
-          options[i] = options[i].flatten
-        end
-      end
-      
-      puts "leading token options: #{options}"
-      
-      # Remove our token from each of those option sets
-      
-      # See if the next token matches one of the option sets. Return set index if yes.
-      
-      
-      
       # More than one transition. Need to look ahead
+      puts "Ambiguous transition! Oh no!" unless @quiet
       return q.index(true)
       
-    end
-  end
-  
-  
-  def resolve_to_terminal transition, token
-    if transition.token?
-      return transition
-    else
-      stuff = transition.options[transit(transition, token)]
-      stuff[0] = resolve_to_terminal(stuff[0], token)
-      return stuff
     end
   end
   
@@ -100,25 +66,26 @@ class Parser
 
 
 
-  def self.parse_file file, nofail=false, quiet=false,
+  def self.parse_file file, nofail=false, quiet=true,
     parser = Parser.new
     parser.tokens = Scanner.scan_file(file)
     parser.stack.push Start
+    parser.quiet = quiet
    
     
     while parser.index <= parser.tokens.length
       begin        
         actual_token = parser.tokens[parser.index]
         token = actual_token.class
-        puts "stack:"
-        puts parser.stack.to_s
-        puts "token:"
-        puts token.to_s
+        puts "stack: #{parser.stack.to_s}" unless quiet
+        puts "token: #{token.to_s}" unless quiet
         tos = parser.stack.pop
 
         # check if we're done
         if token == NilClass && tos.nil?
           return
+        elsif tos.nil?
+          throw ParseException.new actual_token, "Tried to pop empty stack."
         end
         
         # If the top of the stack is a godamn token
@@ -158,7 +125,7 @@ class Parser
    
     if nofail
       parser.stack.each do |failure|
-        puts "Error: never received #{failure}"
+        puts "Error: never received #{failure}" unless quiet
       end
     else
       throw EndOfFileException.new parser.stack.first unless parser.stack.empty?

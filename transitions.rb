@@ -31,7 +31,7 @@ class Start < Transition
   end
 
   def self.options
-    return [[LeftParen, Start3], [Expr, Start2]]
+    return [[LeftParen, Start3], [Constant, Start2], [Id, Start2]]
   end
 end
 
@@ -45,16 +45,23 @@ end
 
 class Start3 < Transition
   def self.options
-    return [[RightParen, Start2], [Start, RightParen, Start2], [Oper2, Start2], [Stmts2, Start2]]
+    return [[RightParen, Start2], [Start, RightParen, Start2], [Expr2, Start2]]
   end
 end
 
 
 class Expr < Transition
   def self.options
-    return [[Oper], [Stmts]]
+    return [[LeftParen, Expr2], [Constant], [Id]]
   end
 end
+
+class Expr2 < Transition
+  def self.options
+    return [[Oper2], [Stmts2]]
+  end
+end
+
 
 
 

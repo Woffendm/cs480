@@ -30,14 +30,13 @@ false
 (while (< x 2) (- x) (+y 2))
 
 
-(x bool)
-(x integer)(y real)(z string)
-
-
-(let (x bool) (y real))
+(let ((x bool) (y real)))
 
 
 (if 1 2 3)
 (if 1 2)
 (if (< x y) (+ x y) (- x y))
 (if (if 1 2) (if 1 2) (stdout (cos 1)))
+
+
+(while(if(<=2x)(-1.2 3e8))(let((x string)))(stdout 7))
