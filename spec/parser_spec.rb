@@ -13,6 +13,18 @@ describe Parser do
       Parser.parse_file './spec/test_data/parser_test_file', nofail, quiet
     end
     
+    it 'proftest1' do
+      Parser.parse_file './spec/test_data/proftest1.in', nofail, quiet
+    end
+    
+    it 'proftest2' do
+      Parser.parse_file './spec/test_data/proftest2.in', nofail, quiet
+    end
+
+    it 'proftest3' do
+      Parser.parse_file './spec/test_data/proftest3.in', nofail, quiet
+    end
+    
   end
   
   
