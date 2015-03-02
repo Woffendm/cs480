@@ -1,5 +1,7 @@
 require_relative './scanner.rb'
 require_relative './transitions.rb'
+require_relative './nary_tree.rb'
+
 
 class ParseException < Exception  
   def initialize token, msg=''
@@ -19,13 +21,15 @@ end
 
 class Parser
   
-  attr_accessor :stack, :tokens, :index, :quiet
+  attr_accessor :stack, :tokens, :index, :quiet, :tree
   
   def initialize
     @stack = Array.new
     @tokens = Array.new
     @index = 0
     @quiet = true
+    @tree = NaryTree.new nil
+    @tree_stack = [@tree]
   end
   
   def transit transition, token, quiet=false
@@ -43,6 +47,26 @@ class Parser
       return q.index(true)
       
     end
+  end
+  
+  
+  # Adds token to tree's children
+  def add_tree token
+    @tree_stack.last.children << NaryTree.new(token)
+  end
+  
+  
+  # Called on left paren
+  def push_tree
+    new_node = NaryTree.new nil
+    @tree_stack.last.children << new_node
+    @tree_stack.push new_node
+  end
+  
+  
+  # Called on right paren
+  def pop_tree
+    @tree_stack.pop
   end
   
   
@@ -66,12 +90,13 @@ class Parser
 
 
 
-  def self.parse_file file, nofail=false, quiet=true,
+  def self.parse_file file, nofail=false, quiet=true
     parser = Parser.new
     parser.tokens = Scanner.scan_file(file)
     parser.stack.push Start
     parser.quiet = quiet
     depth = 0
+    tree = 
     
     while parser.index <= parser.tokens.length
       begin        
@@ -83,7 +108,8 @@ class Parser
 
         # check if we're done
         if token == NilClass && tos.nil?
-          return
+          parser.tree.print_tree
+          return parser.tree
         elsif tos.nil?
           throw ParseException.new actual_token, "Tried to pop empty stack."
         end
@@ -123,8 +149,18 @@ class Parser
           puts "\t" * depth + token.to_s unless quiet
         end
         
+        # Create actual tree structure
         if token == LeftParen
           depth += 1
+          parser.push_tree
+        end
+        
+        if actual_token
+          parser.add_tree actual_token
+        end
+        
+        if token == RightParen
+          parser.pop_tree
         end
 
       
@@ -138,7 +174,6 @@ class Parser
       
       parser.index += 1
     end
-   
    
     if nofail
       parser.stack.each do |failure|

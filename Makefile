@@ -12,6 +12,10 @@ clean:
 Gemfile.lock: Gemfile
 	bundle
 
+compile_file: compile_file.rb compiler.rb nary_tree.rb parse_file.rb parser.rb Gemfile.lock scanner.rb tokens.rb
+	ruby ./compile_file.rb $(FILE)
+
+
 parse_file: parse_file.rb parser.rb Gemfile.lock scanner.rb tokens.rb
 	ruby ./parse_file.rb $(FILE)
 
