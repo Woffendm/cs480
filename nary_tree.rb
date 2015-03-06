@@ -57,10 +57,10 @@ class NaryTree
     case type
     when 'float'
       printer = 'fe.'
-      neg = 'fneg'
+      neg = 'fnegate'
     when 'integer'
       printer = '.'
-      neg = 'neg'
+      neg = 'negate'
     end
     
     # Send and recieve stuff from gforth
@@ -213,7 +213,7 @@ class NaryTree
     when 'float'
       case
       when MReal == vclass
-        unless val.to_s.index('e')
+        unless val.to_s.index('e') || val.to_s.index('E')
           return "#{val}e"
         else
           return val
