@@ -66,22 +66,25 @@ end
 class Exponent < BinaryOperator
 end
 
-class Equal < BinaryOperator
+class Logic < BinaryOperator
 end
 
-class LessThan < BinaryOperator
+class Equal < Logic
 end
 
-class LessThanEqual < BinaryOperator
+class LessThan < Logic
 end
 
-class GreaterThan < BinaryOperator
+class LessThanEqual < Logic
 end
 
-class GreaterThanEqual < BinaryOperator
+class GreaterThan < Logic
 end
 
-class NotEqual < BinaryOperator
+class GreaterThanEqual < Logic
+end
+
+class NotEqual < Logic
 end
 
 class Or < BinaryOperator

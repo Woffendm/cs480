@@ -51,20 +51,79 @@ class NaryTree
   
   
   
-  # This actually runs gforth crap and returns something
-  def send type
+  # used for negation
+  def negation_send type
+    # Choose which stack to pop from
     case type
     when 'float'
-      printer = 'f.'
+      printer = 'fe.'
+      neg = 'fneg'
+    when 'integer'
+      printer = '.'
+      neg = 'neg'
+    end
+    
+    # Send and recieve stuff from gforth
+    gforth_string = children[1..-1].map{|c| c.gforth_val(type) }.join(" ")
+    `echo '#{gforth_string} #{neg} #{printer} bye' > gforth.in`
+    `gforth gforth.in > gforth.out`
+    result = Scanner.scan_file('gforth.out')
+
+    #Deal with negative signs
+    if result.first.class == Minus
+      # Create a new value for the second token, who should have the correct type. While we
+      # don't internally have a way to generate negatives, gforth should understand it just fine.
+      result = result[1].class.new(result.map{|e|e.val}.join(''))
+    else
+      result = result.first
+    end
+    
+    result
+  end
+  
+  
+  
+  # This actually runs gforth crap and returns something
+  def send type, logic=false
+    # Choose which stack to pop from
+    case type
+    when 'float'
+      printer = 'fe.'
     when 'integer'
       printer = '.'
     end
-    gforth_string = children.reverse.map{|c| c.gforth_val(type) }.join(" ")
+    if logic
+      printer = '.'
+    end
+    
+    # Send and recieve stuff from gforth
+    gforth_string = children.rotate(1).map{|c| c.gforth_val(type) }.join(" ")
     `echo '#{gforth_string} #{printer} bye' > gforth.in`
     `gforth gforth.in > gforth.out`
-    result = Scanner.scan_file('gforth.out').first
+    result = Scanner.scan_file('gforth.out')
+
+    #Deal with negative signs
+    if result.first.class == Minus
+      # Create a new value for the second token, who should have the correct type. While we
+      # don't internally have a way to generate negatives, gforth should understand it just fine.
+      result = result[1].class.new(result.map{|e|e.val}.join(''))
+    else
+      result = result.first
+    end
+
+    # Add special stuff if our operator results in boolean result
+    if logic
+      if result.val == '-1'
+        result = MBoolean.new('true')
+      else
+        result = MBoolean.new('false')
+      end
+    end
+    
     result
   end
+  
+  
   
   
   # If it has a value, then convert that value to gforth.
@@ -90,13 +149,37 @@ class NaryTree
       last_child_vals = child_vals[1..-1]
       last_child_classes = child_classes[1..-1]
       
-      if first_child_val.kind_of? Trig
+      case
+      # TRIG
+      when first_child_val.kind_of?(Trig)
         if last_child_classes != [MReal]
           throw SemanticException.new(first_child_val, last_child_vals)
         else
           return send 'float'
         end
-      elsif child_vals.first.kind_of? BinaryOperator
+      # LOGIC
+      when first_child_val.kind_of?(Logic)
+        if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+          return send 'float', true
+        elsif last_child_classes == [MInteger, MInteger]
+          return send 'integer', true
+        else
+          throw SemanticException.new(first_child_val, last_child_vals)
+        end
+      when first_child_class == Minus
+        if last_child_classes == [MReal]
+          return negation_send 'float'
+        elsif last_child_classes == [MInteger]
+          return negation_send 'integer'
+        elsif last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+          return send 'float'
+        elsif last_child_classes == [MInteger, MInteger]
+          return send 'integer'
+        else
+          throw SemanticException.new(first_child_val, last_child_vals)
+        end
+      
+      else child_vals.first.kind_of? BinaryOperator
         # Convert everything to floats
         if child_vals.index(MReal)
           children[1..2].each do |c|
@@ -125,24 +208,28 @@ class NaryTree
   
   
   def gforth_val(type)
+    vclass = val.class
     case type
     when 'float'
       case
-      when MReal == val.class
+      when MReal == vclass
         unless val.to_s.index('e')
           return "#{val}e"
         else
           return val
         end
-      when MInteger == val.class
-        return val + 'e'
-      when MString == val.class
-        return 's" ' + val + '"'
+      when MInteger == vclass
+        return "#{val}e"
       when val.kind_of?(Trig)
         return "f#{val}"
+      when vclass == Exponent
+        return 'fexp'
+      when vclass == Modulo
+        return 'fmod'
       else    
-        return val
+        return "f#{val}"
       end
+      
       
     when 'integer'
       
