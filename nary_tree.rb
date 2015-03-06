@@ -166,6 +166,7 @@ class NaryTree
         else
           throw SemanticException.new(first_child_val, last_child_vals)
         end
+      # NEGATION / SUBTRACTION
       when first_child_class == Minus
         if last_child_classes == [MReal]
           return negation_send 'float'
@@ -178,16 +179,40 @@ class NaryTree
         else
           throw SemanticException.new(first_child_val, last_child_vals)
         end
-      
-      else child_vals.first.kind_of? BinaryOperator
-        # Convert everything to floats
-        if child_vals.index(MReal)
-          children[1..2].each do |c|
-            if c.class != MReal
-              c.val = c.val + 'e'
-            end
-          end
+      # All other number operators except addition
+      when [Multiply, Divide, Modulo, Exponent].include?(first_child_class)
+        if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+          return send 'float'
+        elsif last_child_classes == [MInteger, MInteger]
+          return send 'integer'
+        else
+          throw SemanticException.new(first_child_val, last_child_vals)
         end
+      when first_child_class == Plus
+        if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+          return send 'float'
+        elsif last_child_classes == [MInteger, MInteger]
+          return send 'integer'
+        elsif last_child_classes == [MString, MString]
+          return send 'string'
+        else
+          throw SemanticException.new(first_child_val, last_child_vals)
+        end
+      when [And, Or].include?(first_child_class)
+        if last_child_classes == [MBoolean, MBoolean] 
+          return send 'boolean', true
+        else
+          throw SemanticException.new(first_child_val, last_child_vals)
+        end
+      when first_child_class == Not
+        if last_child_classes == [MBoolean] 
+          return send 'boolean', true
+        else
+          throw SemanticException.new(first_child_val, last_child_vals)
+        end
+      
+      else 
+        
       end
       
   end
@@ -230,23 +255,27 @@ class NaryTree
         return "f#{val}"
       end
       
-      
     when 'integer'
+      case
+      when vclass == Exponent
+        return 'exp'
+      when vclass == Modulo
+        return 'mod'
+      else    
+        return "#{val}"
+      end
       
     when 'string'
-      
-    end
-    case 
-    when MBoolean == val.class
-      return val.downcase
-    when MString == val.class
-      return 's" ' + val + '"'
-    when LeftParen == val.class      
-      return nil
-    when RightParen == val.class 
-      return nil
-    else    
-      return val
+      case
+      when MString == vclass
+        return 's" ' + val + '"'
+      end
+    when 'boolean'
+      if vclass == Not
+        return 'invert'
+      else
+        return val
+      end
     end
   end
   
