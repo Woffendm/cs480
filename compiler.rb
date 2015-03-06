@@ -1,10 +1,5 @@
 require_relative './parser.rb'
 
-class SemanticException < Exception  
-  def initialize operator, &args
-    super "Error: Undefined behavior for #{operator} with arguments #{args.join(', ')}."
-  end
-end
 
 
 
@@ -18,10 +13,12 @@ class Compiler
   
   def self.compile_file file, nofail=false, quiet=true
     tree = Parser.parse_file(file)
+    puts "\n\n"
+    tree.eval
+    tree.print_tree_finished
     
-    gforth_code = tree.to_gforth
-    `echo '#{gforth_code}' > gforth.in`
-    `gforth gforth.in`
+    #{}`echo '#{gforth_code}' > gforth.in`
+    #{}`gforth gforth.in`
   end
 
 end

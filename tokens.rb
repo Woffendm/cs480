@@ -98,13 +98,16 @@ end
 class Not < UnaryOperator
 end
 
-class Sin < UnaryOperator
+class Trig < UnaryOperator
 end
 
-class Cos < UnaryOperator
+class Sin < Trig
 end
 
-class Tan < UnaryOperator
+class Cos < Trig
+end
+
+class Tan < Trig
 end
 
 

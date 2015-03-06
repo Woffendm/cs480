@@ -1,3 +1,14 @@
+require './scanner'
+
+class SemanticException < Exception  
+  def initialize operator, *args
+    super "Error: Undefined behavior for '#{operator}' with arguments '#{args.join(', ')}'."
+  end
+end
+
+
+
+
 # Representation of an N-ary tree
 # Has a value (:val) which can be anything that supports the to_s method
 # Has :children, which is a 0 to N length array off other N-ary trees.
@@ -26,6 +37,79 @@ class NaryTree
   end
   
   
+  def remove_parens
+    new_children = children.dup
+    children.each do |child|
+      unless [LeftParen, RightParen].include?(child.val.class)
+        child = child.remove_parens
+        new_children << child
+      end
+    end
+    children = new_children
+    self
+  end
+  
+  
+  
+  # This actually runs gforth crap and returns something
+  def send type
+    case type
+    when 'float'
+      printer = 'f.'
+    when 'integer'
+      printer = '.'
+    end
+    gforth_string = children.reverse.map{|c| c.gforth_val(type) }.join(" ")
+    `echo '#{gforth_string} #{printer} bye' > gforth.in`
+    `gforth gforth.in > gforth.out`
+    result = Scanner.scan_file('gforth.out').first
+    result
+  end
+  
+  
+  # If it has a value, then convert that value to gforth.
+  # If it doesn't have a value, then it's an expression and needs to be evaluated
+  def eval
+      # Remove parenthesis
+      if self.children.first.val.class == LeftParen
+        self.children = self.children[1..-2]
+      end
+      
+      # Ensure all children have types, so we can evaluate with semantics
+      self.children.each do |child|
+        unless child.val
+          child.val = child.eval
+        end
+      end
+      
+      child_vals = self.children.map{|c|c.val}
+      child_classes = child_vals.map{|c|c.class}
+      first_child_val = child_vals[0]
+      first_child_class = child_classes[0]
+      
+      last_child_vals = child_vals[1..-1]
+      last_child_classes = child_classes[1..-1]
+      
+      if first_child_val.kind_of? Trig
+        if last_child_classes != [MReal]
+          throw SemanticException.new(first_child_val, last_child_vals)
+        else
+          return send 'float'
+        end
+      elsif child_vals.first.kind_of? BinaryOperator
+        # Convert everything to floats
+        if child_vals.index(MReal)
+          children[1..2].each do |c|
+            if c.class != MReal
+              c.val = c.val + 'e'
+            end
+          end
+        end
+      end
+      
+  end
+  
+  
   
   def to_gforth
     return gforth_val if val
@@ -40,7 +124,31 @@ class NaryTree
   
   
   
-  def gforth_val
+  def gforth_val(type)
+    case type
+    when 'float'
+      case
+      when MReal == val.class
+        unless val.to_s.index('e')
+          return "#{val}e"
+        else
+          return val
+        end
+      when MInteger == val.class
+        return val + 'e'
+      when MString == val.class
+        return 's" ' + val + '"'
+      when val.kind_of?(Trig)
+        return "f#{val}"
+      else    
+        return val
+      end
+      
+    when 'integer'
+      
+    when 'string'
+      
+    end
     case 
     when MBoolean == val.class
       return val.downcase
@@ -63,6 +171,14 @@ class NaryTree
     end
     
     puts "\t" * depth + "#{val}" if val
+  end
+  
+  def print_tree_finished depth=0
+    puts "\t" * depth + "#{val}" if val
+    
+    children.each do |child|
+      child.print_tree_finished(depth + 1)
+    end
   end
   
 end
