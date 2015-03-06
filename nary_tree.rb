@@ -51,6 +51,17 @@ class NaryTree
   
   
   
+  # used for string concatenation
+  def concat_send 
+    # Send and recieve stuff from gforth
+    gforth_string = "s#{'" ' + children[1].val.val[1..-1]} pad place s#{'" ' + children[2].val.val[1..-1]} pad +place"
+    `echo '#{gforth_string} pad count type bye' > gforth.in`
+    `gforth gforth.in > gforth.out`
+    MString.new('"' + Scanner.scan_file('gforth.out').map{|t|t.val}.join(' ') + '"')
+  end
+  
+  
+  
   # used for negation
   def negation_send type
     # Choose which stack to pop from
@@ -194,7 +205,7 @@ class NaryTree
         elsif last_child_classes == [MInteger, MInteger]
           return send 'integer'
         elsif last_child_classes == [MString, MString]
-          return send 'string'
+          return concat_send
         else
           throw SemanticException.new(first_child_val, last_child_vals)
         end
@@ -268,7 +279,7 @@ class NaryTree
     when 'string'
       case
       when MString == vclass
-        return 's" ' + val + '"'
+        return "'s #{val}' pad place"
       end
     when 'boolean'
       if vclass == Not
