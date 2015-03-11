@@ -9,24 +9,31 @@ describe Compiler do
   context 'can compile' do
     quiet = false
     
-    it 'the test file' do
-      Compiler.compile_file './spec/test_data/compiler_test_file', nofail, quiet
+    it 'addition' do
+      Compiler.compile_file './spec/test_data/compiler/addition', nofail, quiet
     end
     
-    it 'proftest1' do
-      Compiler.compile_file './spec/test_data/proftest1.in', nofail, quiet
+    it 'concatenation' do
+      Compiler.compile_file './spec/test_data/compiler/concat', nofail, quiet
     end
     
-    it 'proftest2' do
-      Compiler.compile_file './spec/test_data/proftest2.in', nofail, quiet
+    it 'negation' do
+      Compiler.compile_file './spec/test_data/compiler/negate', nofail, quiet
     end
 
-    it 'proftest3' do
-      Compiler.compile_file './spec/test_data/proftest3.in', nofail, quiet
+    it 'subtraction' do
+      Compiler.compile_file './spec/test_data/compiler/subtraction', nofail, quiet
+    end
+    
+    it 'complex files' do
+      Compiler.compile_file './spec/test_data/compiler/swag', nofail, quiet
+    end
+    
+    it 'More complex files' do
+      Compiler.compile_file './spec/test_data/compiler/testo', nofail, quiet
     end
     
   end
-  
   
   context 'can NOT compile' do
     quiet = true

@@ -1,0 +1,6 @@
+( % 5.0 2.3)
+(+ 1 2)
+(- 3 (*2.3 6))
+(and true false) (or false true) (and true true) (not true)
+(and true (>= 6 (^ 2.4 7e-8)))
+()()((1)(+ 4 5))
