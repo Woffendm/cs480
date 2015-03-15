@@ -26,9 +26,9 @@ class NaryTree
   # used for string concatenation
   def concat_send 
     # Send and recieve stuff from gforth
-    gforth_string = "s#{'" ' + children[1].val.val[1..-1]} pad place s#{'" ' + children[2].val.val[1..-1]} pad +place"
-    `echo '#{gforth_string} pad count type bye' > gforth.in`
-    `gforth gforth.in > gforth.out`
+    gforth_string = children.rotate(1).map{|c| c.gforth_val('string') }.join(" ")
+    `echo '#{gforth_string} type bye' > gforth.in`
+    `gforth gforth.in > gforth.out`    
     MString.new('"' + Scanner.scan_file('gforth.out').map{|t|t.val}.join(' ') + '"')
   end
   
@@ -235,12 +235,15 @@ class NaryTree
       else    
         return "#{val}"
       end
-      
+    
     when 'string'
       case
       when MString == vclass
-        return "'s #{val}'"
+        return "s\" #{val.val[1..-1]}"
+      when vclass == Plus
+        return 's+'
       end
+      
     when 'boolean'
       if vclass == Not
         return 'invert'
@@ -259,6 +262,8 @@ class NaryTree
     
     puts "\t" * depth + "#{val}" if val
   end
+  
+  
   
   def print_tree_finished depth=0
     puts "\t" * depth + "#{val}" if val
