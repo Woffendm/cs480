@@ -22,34 +22,6 @@ class NaryTree
   
   
   
-  # Performs a post-order traversal of the N-ary tree and returns the result in string form with
-  # space delimited values
-  def post_order
-    return val.to_s if children.empty?
-    return_values = []
-
-    children.each do |child|
-      return_values << child.post_order
-    end
-
-    return_values << val.to_s
-    return_values.join " "
-  end
-  
-  
-  def remove_parens
-    new_children = children.dup
-    children.each do |child|
-      unless [LeftParen, RightParen].include?(child.val.class)
-        child = child.remove_parens
-        new_children << child
-      end
-    end
-    children = new_children
-    self
-  end
-  
-  
   
   # used for string concatenation
   def concat_send 
@@ -230,18 +202,6 @@ class NaryTree
   
   
   
-  def to_gforth
-    return gforth_val if val
-    return_values = []
-
-    children.reverse.each do |child|
-      return_values << child.to_gforth
-    end
-
-    return_values.join " "
-  end
-  
-  
   
   def gforth_val(type)
     vclass = val.class
@@ -279,7 +239,7 @@ class NaryTree
     when 'string'
       case
       when MString == vclass
-        return "'s #{val}' pad place"
+        return "'s #{val}'"
       end
     when 'boolean'
       if vclass == Not

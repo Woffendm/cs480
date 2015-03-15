@@ -33,10 +33,28 @@ describe Compiler do
       Compiler.compile_file './spec/test_data/compiler/testo', nofail, quiet
     end
     
+    it 'strings' do
+      Compiler.compile_file './spec/test_data/compiler/strings', nofail, quiet
+    end
+    
+    
   end
   
   context 'can NOT compile' do
+    
     quiet = true
+    
+    
+    it 'concatenation between strings and other things' do
+      expect{Compiler.compile_file './spec/test_data/compiler/undefined_concatenation', nofail, quiet}.to raise_error
+    end
+    
+    it 'trig with non reals' do
+      expect{Compiler.compile_file './spec/test_data/compiler/invalid_trig', nofail, quiet}.to raise_error
+    end
+    
+    
+    
     it 'unclosed parenthesis' do
       expect{Compiler.compile_file('./spec/test_data/unclosed_parens', nofail, quiet)}.to raise_error
     end
