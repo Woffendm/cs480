@@ -120,6 +120,8 @@ class NaryTree
   # If it has a value, then convert that value to gforth.
   # If it doesn't have a value, then it's an expression and needs to be evaluated
   def eval
+    return if self.children.empty?
+    
     # Remove parenthesis
     if self.children.first.val.class == LeftParen
       self.children = self.children[1..-2]
@@ -235,9 +237,7 @@ class NaryTree
     
     # Variable ssignment
     when first_child_class == Assign
-      if last_child_classes[0] == Id
-        puts $var_table.table
-        
+      if last_child_classes[0] == Id        
         var = last_child_vals[0].val
         $var_table.assign(var, last_child_vals[1])
         return 'assignment'
@@ -263,7 +263,6 @@ class NaryTree
     # Need to track the variable for when we free it later.
     when first_child_class == Id
       if last_child_classes == [Type]
-        puts last_child_vals.to_s
         $var_table.declare(first_child_val.val, last_child_vals[0].val)
         $scope_stack.push(first_child_val.val)
         $pop_count += 1
@@ -292,6 +291,22 @@ class NaryTree
       end
       return 'ignore'
 
+
+    # While loop
+    # MAY BE WRONG WITH BRANCHES!!!!!!!!!!
+    # keeps evaluating subsequent stuff so long as the first expression is true
+    when first_child_class == While
+      if last_child_vals[0].val == 'true'
+        self.children[2..-1].each { |c| c.eval }
+        self.children[1].eval
+        return 'ignore'
+      elsif last_child_vals[0].val == 'false'
+        return 'ignore'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+
+    # For things where we shouldn't evaluate a return value, like printf or assignment.
     when first_child_val == 'ignore'
       self.children = self.children[1..-1]
       self.eval
