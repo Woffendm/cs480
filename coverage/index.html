@@ -14,27 +14,27 @@
       <img src="./assets/0.9.0/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" style="display:none;">
-      <div class="timestamp">Generated <abbr class="timeago" title="2015-03-15T16:31:04-07:00">2015-03-15T16:31:04-07:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2015-03-15T16:56:03-07:00">2015-03-15T16:56:03-07:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
         <div class="file_list_container" id="AllFiles">
   <h2>
     <span class="group_name">All Files</span>
-    (<span class="covered_percent"><span class="yellow">82.4%</span></span>
+    (<span class="covered_percent"><span class="yellow">82.56%</span></span>
      covered at
      <span class="covered_strength">
        <span class="green">
-         54.76
+         54.74
        </span>
     </span> hits/line)
   </h2>
   <a name="AllFiles"></a>
   <div>
     <b>9</b> files in total.
-    <b>1352</b> relevant lines. 
-    <span class="green"><b>1114</b> lines covered</span> and
-    <span class="red"><b>238</b> lines missed </span>
+    <b>1353</b> relevant lines. 
+    <span class="green"><b>1117</b> lines covered</span> and
+    <span class="red"><b>236</b> lines missed </span>
   </div>
   <table class="file_list">
     <thead>
@@ -62,12 +62,12 @@
       
       <tr>
         <td class="strong"><a href="#ca78d12ce215b991f7556835b0ebf55871b25658" class="src_link" title="nary_tree.rb">nary_tree.rb</a></td>
-        <td class="green strong">93.5 %</td>
-        <td>271</td>
-        <td>123</td>
-        <td>115</td>
-        <td>8</td>
-        <td>34.8</td>
+        <td class="green strong">95.16 %</td>
+        <td>276</td>
+        <td>124</td>
+        <td>118</td>
+        <td>6</td>
+        <td>34.7</td>
       </tr>
       
       <tr>
@@ -321,11 +321,11 @@
         <div class="source_table" id="ca78d12ce215b991f7556835b0ebf55871b25658">
   <div class="header">
     <h3>nary_tree.rb</h3>
-    <h4><span class="green">93.5 %</span> covered</h4>
+    <h4><span class="green">95.16 %</span> covered</h4>
     <div>
-      <b>123</b> relevant lines. 
-      <span class="green"><b>115</b> lines covered</span> and
-      <span class="red"><b>8</b> lines missed.</span>
+      <b>124</b> relevant lines. 
+      <span class="green"><b>118</b> lines covered</span> and
+      <span class="red"><b>6</b> lines missed.</span>
     </div>
   </div>
   
@@ -500,22 +500,22 @@
           <code class="ruby">    # Send and recieve stuff from gforth</code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="29">
-          <span class="hits">1</span>
+        <li class="covered" data-hits="4" data-linenumber="29">
+          <span class="hits">4</span>
           
-          <code class="ruby">    gforth_string = &quot;s#{&#39;&quot; &#39; + children[1].val.val[1..-1]} pad place s#{&#39;&quot; &#39; + children[2].val.val[1..-1]} pad +place&quot;</code>
+          <code class="ruby">    gforth_string = children.rotate(1).map{|c| c.gforth_val(&#39;string&#39;) }.join(&quot; &quot;)</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="30">
           <span class="hits">1</span>
           
-          <code class="ruby">    `echo &#39;#{gforth_string} pad count type bye&#39; &gt; gforth.in`</code>
+          <code class="ruby">    `echo &#39;#{gforth_string} type bye&#39; &gt; gforth.in`</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="31">
           <span class="hits">1</span>
           
-          <code class="ruby">    `gforth gforth.in &gt; gforth.out`</code>
+          <code class="ruby">    `gforth gforth.in &gt; gforth.out`    </code>
         </li>
       
         <li class="covered" data-hits="3" data-linenumber="32">
@@ -1568,14 +1568,14 @@
           <code class="ruby">  def gforth_val(type)</code>
         </li>
       
-        <li class="covered" data-hits="64" data-linenumber="207">
-          <span class="hits">64</span>
+        <li class="covered" data-hits="67" data-linenumber="207">
+          <span class="hits">67</span>
           
           <code class="ruby">    vclass = val.class</code>
         </li>
       
-        <li class="covered" data-hits="64" data-linenumber="208">
-          <span class="hits">64</span>
+        <li class="covered" data-hits="67" data-linenumber="208">
+          <span class="hits">67</span>
           
           <code class="ruby">    case type</code>
         </li>
@@ -1757,7 +1757,7 @@
         <li class="never" data-hits="" data-linenumber="238">
           
           
-          <code class="ruby">      </code>
+          <code class="ruby">    </code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="239">
@@ -1778,181 +1778,211 @@
           <code class="ruby">      when MString == vclass</code>
         </li>
       
-        <li class="missed" data-hits="0" data-linenumber="242">
+        <li class="covered" data-hits="2" data-linenumber="242">
+          <span class="hits">2</span>
           
-          
-          <code class="ruby">        return &quot;&#39;s #{val}&#39;&quot;</code>
+          <code class="ruby">        return &quot;s\&quot; #{val.val[1..-1]}&quot;</code>
         </li>
       
-        <li class="missed" data-hits="0" data-linenumber="243">
+        <li class="never" data-hits="" data-linenumber="243">
           
+          
+          <code class="ruby">      when vclass == Plus</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="244">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        return &#39;s+&#39;</code>
+        </li>
+      
+        <li class="covered" data-hits="3" data-linenumber="245">
+          <span class="hits">3</span>
           
           <code class="ruby">      end</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="244">
+        <li class="never" data-hits="" data-linenumber="246">
           
           
-          <code class="ruby">    when &#39;boolean&#39;</code>
-        </li>
-      
-        <li class="covered" data-hits="14" data-linenumber="245">
-          <span class="hits">14</span>
-          
-          <code class="ruby">      if vclass == Not</code>
-        </li>
-      
-        <li class="covered" data-hits="1" data-linenumber="246">
-          <span class="hits">1</span>
-          
-          <code class="ruby">        return &#39;invert&#39;</code>
+          <code class="ruby">      </code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="247">
           
           
-          <code class="ruby">      else</code>
+          <code class="ruby">    when &#39;boolean&#39;</code>
         </li>
       
-        <li class="covered" data-hits="13" data-linenumber="248">
-          <span class="hits">13</span>
+        <li class="covered" data-hits="14" data-linenumber="248">
+          <span class="hits">14</span>
           
-          <code class="ruby">        return val</code>
+          <code class="ruby">      if vclass == Not</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="249">
+        <li class="covered" data-hits="1" data-linenumber="249">
+          <span class="hits">1</span>
           
-          
-          <code class="ruby">      end</code>
+          <code class="ruby">        return &#39;invert&#39;</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="250">
           
           
-          <code class="ruby">    end</code>
+          <code class="ruby">      else</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="251">
+        <li class="covered" data-hits="13" data-linenumber="251">
+          <span class="hits">13</span>
           
-          
-          <code class="ruby">  end</code>
+          <code class="ruby">        return val</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="252">
           
           
-          <code class="ruby">  </code>
+          <code class="ruby">      end</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="253">
           
           
-          <code class="ruby">  </code>
+          <code class="ruby">    end</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="254">
           
           
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="255">
+          
+          
           <code class="ruby">  </code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="255">
+        <li class="never" data-hits="" data-linenumber="256">
+          
+          
+          <code class="ruby">  </code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="257">
+          
+          
+          <code class="ruby">  </code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="258">
           <span class="hits">1</span>
           
           <code class="ruby">  def print_tree depth=0</code>
         </li>
       
-        <li class="covered" data-hits="487" data-linenumber="256">
+        <li class="covered" data-hits="487" data-linenumber="259">
           <span class="hits">487</span>
           
           <code class="ruby">    children.each do |child|</code>
         </li>
       
-        <li class="covered" data-hits="474" data-linenumber="257">
+        <li class="covered" data-hits="474" data-linenumber="260">
           <span class="hits">474</span>
           
           <code class="ruby">      child.print_tree(depth + 1)</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="258">
-          
-          
-          <code class="ruby">    end</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="259">
-          
-          
-          <code class="ruby">    </code>
-        </li>
-      
-        <li class="covered" data-hits="487" data-linenumber="260">
-          <span class="hits">487</span>
-          
-          <code class="ruby">    puts &quot;\t&quot; * depth + &quot;#{val}&quot; if val</code>
-        </li>
-      
         <li class="never" data-hits="" data-linenumber="261">
           
           
-          <code class="ruby">  end</code>
+          <code class="ruby">    end</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="262">
           
           
-          <code class="ruby">  </code>
+          <code class="ruby">    </code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="263">
-          <span class="hits">1</span>
-          
-          <code class="ruby">  def print_tree_finished depth=0</code>
-        </li>
-      
-        <li class="covered" data-hits="104" data-linenumber="264">
-          <span class="hits">104</span>
+        <li class="covered" data-hits="487" data-linenumber="263">
+          <span class="hits">487</span>
           
           <code class="ruby">    puts &quot;\t&quot; * depth + &quot;#{val}&quot; if val</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="265">
-          
-          
-          <code class="ruby">    </code>
-        </li>
-      
-        <li class="covered" data-hits="104" data-linenumber="266">
-          <span class="hits">104</span>
-          
-          <code class="ruby">    children.each do |child|</code>
-        </li>
-      
-        <li class="covered" data-hits="97" data-linenumber="267">
-          <span class="hits">97</span>
-          
-          <code class="ruby">      child.print_tree_finished(depth + 1)</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="268">
-          
-          
-          <code class="ruby">    end</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="269">
+        <li class="never" data-hits="" data-linenumber="264">
           
           
           <code class="ruby">  end</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="270">
+        <li class="never" data-hits="" data-linenumber="265">
           
           
           <code class="ruby">  </code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="271">
+        <li class="never" data-hits="" data-linenumber="266">
+          
+          
+          <code class="ruby">  </code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="267">
+          
+          
+          <code class="ruby">  </code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="268">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def print_tree_finished depth=0</code>
+        </li>
+      
+        <li class="covered" data-hits="104" data-linenumber="269">
+          <span class="hits">104</span>
+          
+          <code class="ruby">    puts &quot;\t&quot; * depth + &quot;#{val}&quot; if val</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="270">
+          
+          
+          <code class="ruby">    </code>
+        </li>
+      
+        <li class="covered" data-hits="104" data-linenumber="271">
+          <span class="hits">104</span>
+          
+          <code class="ruby">    children.each do |child|</code>
+        </li>
+      
+        <li class="covered" data-hits="97" data-linenumber="272">
+          <span class="hits">97</span>
+          
+          <code class="ruby">      child.print_tree_finished(depth + 1)</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="273">
+          
+          
+          <code class="ruby">    end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="274">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="275">
+          
+          
+          <code class="ruby">  </code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="276">
           
           
           <code class="ruby">end</code>

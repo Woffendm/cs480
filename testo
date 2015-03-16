@@ -1,0 +1,6 @@
+(let ((x int) (y real) (z bool)))
+(:= x 1)
+(:= y 2.0)
+(:= z true)
+(= x y)
+(not z)

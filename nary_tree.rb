@@ -1,4 +1,12 @@
+# NOTE you might have to change parsing for varlists / let statements
+
 require './scanner'
+require './var_table'
+
+$var_table = VarTable.new
+$pop_count = 0
+$pop_count_stack = []
+$scope_stack = []
 
 class SemanticException < Exception  
   def initialize operator, *args
@@ -112,92 +120,187 @@ class NaryTree
   # If it has a value, then convert that value to gforth.
   # If it doesn't have a value, then it's an expression and needs to be evaluated
   def eval
-      # Remove parenthesis
-      if self.children.first.val.class == LeftParen
-        self.children = self.children[1..-2]
+    # Remove parenthesis
+    if self.children.first.val.class == LeftParen
+      self.children = self.children[1..-2]
+    end
+    
+    # Ensure all children have types, so we can evaluate with semantics
+    self.children.each do |child|
+      unless child.val
+        child.val = child.eval
       end
-      
-      # Ensure all children have types, so we can evaluate with semantics
-      self.children.each do |child|
-        unless child.val
-          child.val = child.eval
+    end
+    
+    
+    child_vals = self.children.map{|c|c.val}
+    child_classes = child_vals.map{|c|c.class}
+    first_child_val = child_vals[0]
+    first_child_class = child_classes[0]
+    last_child_vals = child_vals[1..-1]
+    last_child_classes = child_classes[1..-1]
+    
+    
+    # Go through and evaluate each child to ensure that IDs become something we can work with
+    unless [Assign].include?(first_child_class)
+      last_child_classes.each_with_index do |child, index|
+        if child == Id
+          var = $var_table.get(last_child_vals[index].val)
+          last_child_vals[index] = var.val
+          last_child_classes[index] = var.type
+          self.children[index + 1].val = var.type.new(var.val)
         end
       end
-      
-      child_vals = self.children.map{|c|c.val}
-      child_classes = child_vals.map{|c|c.class}
-      first_child_val = child_vals[0]
-      first_child_class = child_classes[0]
-      
-      last_child_vals = child_vals[1..-1]
-      last_child_classes = child_classes[1..-1]
-      
-      case
-      # TRIG
-      when first_child_val.kind_of?(Trig)
-        if last_child_classes != [MReal]
-          throw SemanticException.new(first_child_val, last_child_vals)
-        else
-          return send 'float'
-        end
-      # LOGIC
-      when first_child_val.kind_of?(Logic)
-        if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
-          return send 'float', true
-        elsif last_child_classes == [MInteger, MInteger]
-          return send 'integer', true
-        else
-          throw SemanticException.new(first_child_val, last_child_vals)
-        end
-      # NEGATION / SUBTRACTION
-      when first_child_class == Minus
-        if last_child_classes == [MReal]
-          return negation_send 'float'
-        elsif last_child_classes == [MInteger]
-          return negation_send 'integer'
-        elsif last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
-          return send 'float'
-        elsif last_child_classes == [MInteger, MInteger]
-          return send 'integer'
-        else
-          throw SemanticException.new(first_child_val, last_child_vals)
-        end
-      # All other number operators except addition
-      when [Multiply, Divide, Modulo, Exponent].include?(first_child_class)
-        if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
-          return send 'float'
-        elsif last_child_classes == [MInteger, MInteger]
-          return send 'integer'
-        else
-          throw SemanticException.new(first_child_val, last_child_vals)
-        end
-      when first_child_class == Plus
-        if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
-          return send 'float'
-        elsif last_child_classes == [MInteger, MInteger]
-          return send 'integer'
-        elsif last_child_classes == [MString, MString]
-          return concat_send
-        else
-          throw SemanticException.new(first_child_val, last_child_vals)
-        end
-      when [And, Or].include?(first_child_class)
-        if last_child_classes == [MBoolean, MBoolean] 
-          return send 'boolean', true
-        else
-          throw SemanticException.new(first_child_val, last_child_vals)
-        end
-      when first_child_class == Not
-        if last_child_classes == [MBoolean] 
-          return send 'boolean', true
-        else
-          throw SemanticException.new(first_child_val, last_child_vals)
-        end
-      
-      else 
+    end
+    
+    
+    
+    case
+    # TRIG
+    when first_child_val.kind_of?(Trig)
+      if last_child_classes != [MReal]
+        throw SemanticException.new(first_child_val, last_child_vals)
+      else
+        return send 'float'
+      end
+    
+    
+    # LOGIC
+    when first_child_val.kind_of?(Logic)
+      if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+        return send 'float', true
+      elsif last_child_classes == [MInteger, MInteger]
+        return send 'integer', true
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # NEGATION / SUBTRACTION
+    when first_child_class == Minus
+      if last_child_classes == [MReal]
+        return negation_send 'float'
+      elsif last_child_classes == [MInteger]
+        return negation_send 'integer'
+      elsif last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+        return send 'float'
+      elsif last_child_classes == [MInteger, MInteger]
+        return send 'integer'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # All other number operators except addition
+    when [Multiply, Divide, Modulo, Exponent].include?(first_child_class)
+      if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+        return send 'float'
+      elsif last_child_classes == [MInteger, MInteger]
+        return send 'integer'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # Addition / Concatenation
+    when first_child_class == Plus
+      if last_child_classes == [MReal, MInteger] || last_child_classes == [MReal, MReal] || last_child_classes == [MInteger, MReal]
+        return send 'float'
+      elsif last_child_classes == [MInteger, MInteger]
+        return send 'integer'
+      elsif last_child_classes == [MString, MString]
+        return concat_send
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # And / Or
+    when [And, Or].include?(first_child_class)
+      if last_child_classes == [MBoolean, MBoolean] 
+        return send 'boolean', true
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # Negation
+    when first_child_class == Not
+      if last_child_classes == [MBoolean] 
+        return send 'boolean', true
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # Variable ssignment
+    when first_child_class == Assign
+      if last_child_classes[0] == Id
+        puts $var_table.table
         
+        var = last_child_vals[0].val
+        $var_table.assign(var, last_child_vals[1])
+        return 'assignment'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
       end
+    
+    
+    
+    # Let statement
+    # Records pop count for current level. Resets pop count. Leaves flag to free variables.
+    when first_child_class == Let
+      if last_child_vals == ['varlist']
+        $pop_count_stack << $pop_count
+        $pop_count = 0
+        return 'free_variables'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # Declare variables.
+    # Need to track the variable for when we free it later.
+    when first_child_class == Id
+      if last_child_classes == [Type]
+        puts last_child_vals.to_s
+        $var_table.declare(first_child_val.val, last_child_vals[0].val)
+        $scope_stack.push(first_child_val.val)
+        $pop_count += 1
+        return 'declaration'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # Varlists
+    when first_child_val == 'declaration'
+      last_child_vals.each do |val|
+        if val != 'declaration'
+          throw SemanticException.new(first_child_val, last_child_vals)
+        end
+      end
+      return 'varlist'
       
+    
+    # Releasing variables when we rise above their scope
+    when first_child_val == 'free_variables'
+      times_to_pop = $pop_count_stack.pop
+      times_to_pop.times do
+        variable = $scope_stack.pop
+        $var_table.pop(variable)
+      end
+      return 'ignore'
+
+    when first_child_val == 'ignore'
+      self.children = self.children[1..-1]
+      self.eval
+    
+    # Undefined semantics
+    else 
+      throw SemanticException.new(first_child_val, last_child_vals)
+    end
+    
   end
   
   
