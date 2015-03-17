@@ -2,6 +2,7 @@
 
 require './scanner'
 require './var_table'
+require 'json'
 
 $var_table = VarTable.new
 $pop_count = 0
@@ -130,8 +131,10 @@ class NaryTree
     
     # Ensure all children have types, so we can evaluate with semantics
     # There are special cases for conditionals, where we delay evaluation.
-    if [While, If].include?(children[0].val.class)
-      children[1].val = children[1].eval unless children[1].val
+    if [While, If].include?(self.children[0].val.class)
+      # Use stupid serialization/deserialization because of GODAMN SHALLOW COPPYING!!!!!!!!
+      children_copy = Marshal.load(Marshal.dump(self.children))
+      children[1].val = self.children[1].eval unless self.children[1].val
     else
       self.children.each do |child|
         child.val = child.eval unless child.val
@@ -302,7 +305,8 @@ class NaryTree
     when first_child_class == While
       if last_child_vals[0].val == 'true'
         self.children[2..-1].each { |c| c.eval }
-        self.children[1].eval
+        self.children = children_copy
+        self.eval
         return 'ignore'
       elsif last_child_vals[0].val == 'false'
         return 'ignore'
