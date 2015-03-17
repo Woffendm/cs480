@@ -154,10 +154,12 @@ class NaryTree
     unless [Assign].include?(first_child_class)
       last_child_classes.each_with_index do |child, index|
         if child == Id
-          var = $var_table.get(last_child_vals[index].val)
-          last_child_vals[index] = var.val
-          last_child_classes[index] = var.type
-          self.children[index + 1].val = var.type.new(var.val)
+          var = last_child_vals[index].val
+          type = $var_table.get_type(var)
+          val = $var_table.get_val(var)
+          last_child_vals[index] = val
+          last_child_classes[index] = type
+          self.children[index + 1].val = type.new(val)
         end
       end
     end
@@ -335,10 +337,19 @@ class NaryTree
       end
     
     
-    # For things where we shouldn't evaluate a return value, like printf or assignment.
+    when first_child_class == Print
+      if last_child_vals[0].kind_of?(Token)
+        puts last_child_vals[0].val
+        return 'ignore'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
+    # For things where we shouldn't evaluate a return value, like stdout or assignment.
     when first_child_val == 'ignore'
-      #self.children = self.children[1..-1]
-      #self.eval
+      # Do nothing
+    
     
     # Undefined semantics
     else 

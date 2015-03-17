@@ -8,11 +8,19 @@ class VariableTypeError < Exception
 end
 
 
-class UndefinedVariableException < Exception  
+class UnassignedVariableException < Exception  
   def initialize variable
-    super "Error: Undefined variable #{variable}."
+    super "Error: Unassigned variable #{variable}."
   end
 end
+
+
+class UndeclaredVariableException < Exception  
+  def initialize variable
+    super "Error: Undeclared variable #{variable}."
+  end
+end
+
 
 
 
@@ -60,9 +68,25 @@ class VarTable
   
   
   def get(var)
-    variable = @table[var].last
-    throw UndefinedVariableException.new(var) unless variable
+    array = @table[var]
+    if array.nil? || (variable = array.last).nil?
+      throw UndeclaredVariableException.new(var)
+    end
     variable
+  end
+  
+  
+  def get_val(var)
+    variable = get(var)
+    throw UnassignedVariableException.new(var) unless variable.val
+    variable.val
+  end
+  
+  
+  def get_type(var)
+    variable = get(var)
+    throw UndeclaredVariableException.new(var) unless variable.type
+    variable.type
   end
   
 end
