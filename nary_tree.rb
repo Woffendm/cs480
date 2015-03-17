@@ -128,6 +128,7 @@ class NaryTree
       self.children = self.children[1..-2]
     end
     
+    return if self.children.empty?
     
     # Ensure all children have types, so we can evaluate with semantics
     # There are special cases for conditionals, where we delay evaluation.
@@ -344,6 +345,10 @@ class NaryTree
       else
         throw SemanticException.new(first_child_val, last_child_vals)
       end
+    
+    
+    when first_child_val.kind_of?(Type)
+      return self.children[0].val
     
     
     # For things where we shouldn't evaluate a return value, like stdout or assignment.

@@ -10,11 +10,6 @@ class Transition
   def self.firsts
     return self.options.map{|o|o.first.firsts}.flatten
   end
-  def self.transit token
-    q = self.options.map{|o|o.first.firsts.include?(token)}
-    puts q.to_s
-    q.index(true)
-  end
 end
 
 

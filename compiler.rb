@@ -12,13 +12,12 @@ class Compiler
   
   
   def self.compile_file file, nofail=false, quiet=true
+    puts "PARSE TREE:"
     tree = Parser.parse_file(file)
-    puts "\n\n"
+    puts "\n\nPROGRAM OUTPUT:"
     tree.eval
-    tree.print_tree_finished
-    
-    #{}`echo '#{gforth_code}' > gforth.in`
-    #{}`gforth gforth.in`
+    puts "\n\nEVALUATED PARSE TREE:" unless quiet
+    tree.print_tree_finished unless quiet
   end
 
 end

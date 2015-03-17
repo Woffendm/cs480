@@ -2,19 +2,11 @@
 
 class Token
   attr_accessor :val, :index, :line
-  
-  def firsts
-    return [self.class]
-  end
-  
+    
   def self.firsts
     return [self]
   end
-  
-  def token?
-    true
-  end
-  
+    
   def self.token?
     true
   end

@@ -1,0 +1,6 @@
+(stdout 3)
+(let ((x int)))
+(:= x 3)
+(stdout x)
+(stdout (- 2 4))
+(stdout (< 1 x))

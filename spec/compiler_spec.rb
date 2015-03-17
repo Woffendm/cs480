@@ -37,6 +37,26 @@ describe Compiler do
       Compiler.compile_file './spec/test_data/compiler/strings', nofail, quiet
     end
     
+    it 'conditionals' do
+      Compiler.compile_file './spec/test_data/compiler/conditionals', nofail, quiet
+    end
+    
+    it 'loops' do
+      Compiler.compile_file './spec/test_data/compiler/loops', nofail, quiet
+    end
+    
+    it 'multiple_variable_arithmatic' do
+      Compiler.compile_file './spec/test_data/compiler/multiple_variable_arithmatic', nofail, quiet
+    end
+    
+    it 'single_variable_arithmatic_and_scope' do
+      Compiler.compile_file './spec/test_data/compiler/single_variable_arithmatic_and_scope', nofail, quiet
+    end
+    
+    it 'print' do
+      Compiler.compile_file './spec/test_data/compiler/print', nofail, quiet
+    end
+    
     
   end
   
@@ -85,6 +105,18 @@ describe Compiler do
     
     it 'negatives how normal people would write them' do
       expect{Compiler.compile_file('./spec/test_data/negative', nofail, quiet)}.to raise_error
+    end
+    
+    it 'undeclared variables' do
+      expect{Compiler.compile_file('./spec/test_data/compiler/undeclared_variable', nofail, quiet)}.to raise_error
+    end
+    
+    it 'unassigned variables' do
+      expect{Compiler.compile_file('./spec/test_data/compiler/unassigned_variable', nofail, quiet)}.to raise_error
+    end
+    
+    it 'variable type errors' do
+      expect{Compiler.compile_file('./spec/test_data/compiler/variable_type_error', nofail, quiet)}.to raise_error
     end
     
     
