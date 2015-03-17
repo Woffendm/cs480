@@ -127,10 +127,14 @@ class NaryTree
       self.children = self.children[1..-2]
     end
     
+    
     # Ensure all children have types, so we can evaluate with semantics
-    self.children.each do |child|
-      unless child.val
-        child.val = child.eval
+    # There are special cases for conditionals, where we delay evaluation.
+    if [While, If].include?(children[0].val.class)
+      children[1].val = children[1].eval unless children[1].val
+    else
+      self.children.each do |child|
+        child.val = child.eval unless child.val
       end
     end
     
