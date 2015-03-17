@@ -132,7 +132,7 @@ class NaryTree
     # Ensure all children have types, so we can evaluate with semantics
     # There are special cases for conditionals, where we delay evaluation.
     if [While, If].include?(self.children[0].val.class)
-      # Use stupid serialization/deserialization because of GODAMN SHALLOW COPPYING!!!!!!!!
+      # Use stupid serialization/deserialization because of GODAMN SHALLOW COPYING!!!!!!!!
       children_copy = Marshal.load(Marshal.dump(self.children))
       children[1].val = self.children[1].eval unless self.children[1].val
     else
@@ -300,7 +300,6 @@ class NaryTree
 
 
     # While loop
-    # MAY BE WRONG WITH BRANCHES!!!!!!!!!!
     # keeps evaluating subsequent stuff so long as the first expression is true
     when first_child_class == While
       if last_child_vals[0].val == 'true'
@@ -313,11 +312,33 @@ class NaryTree
       else
         throw SemanticException.new(first_child_val, last_child_vals)
       end
-
+      
+      
+    # If branch
+    # Given two expressions, evaluates the second only if the first evaluates to true
+    # Given three expressions, evaluates the second if the first evaluates to true, otherwise
+    #  evaluates the third.
+    when first_child_class == If
+      if last_child_classes[0] == MBoolean
+        if last_child_vals.length == 2 && last_child_vals[0].val == 'true'
+          self.children[2].val = self.children[2].eval
+        elsif last_child_vals.length == 3
+          if last_child_vals[0].val == 'true'
+            self.children[2].val = self.children[2].eval
+          else
+            self.children[3].val = self.children[3].eval
+          end
+        end
+        return 'ignore'
+      else
+        throw SemanticException.new(first_child_val, last_child_vals)
+      end
+    
+    
     # For things where we shouldn't evaluate a return value, like printf or assignment.
     when first_child_val == 'ignore'
-      self.children = self.children[1..-1]
-      self.eval
+      #self.children = self.children[1..-1]
+      #self.eval
     
     # Undefined semantics
     else 
